@@ -1,0 +1,226 @@
+{
+  "categories": [
+    {
+      "name": "Ideation & Research",
+      "slug": "ideation-research",
+      "description": "Tools for market research, idea validation, and planning",
+      "phase": "ideation",
+      "icon": "Lightbulb",
+      "sortOrder": 1
+    },
+    {
+      "name": "AI Code Assistants",
+      "slug": "ai-code-assistants",
+      "description": "AI-powered coding tools and assistants",
+      "phase": "building",
+      "icon": "Code",
+      "sortOrder": 1
+    },
+    {
+      "name": "Deployment & Hosting",
+      "slug": "deployment-hosting",
+      "description": "Platforms for deploying and hosting your applications",
+      "phase": "building",
+      "icon": "Server",
+      "sortOrder": 2
+    },
+    {
+      "name": "Design & UI",
+      "slug": "design-ui",
+      "description": "Tools for UI/UX design and prototyping",
+      "phase": "design",
+      "icon": "Palette",
+      "sortOrder": 1
+    },
+    {
+      "name": "Launch Platforms",
+      "slug": "launch-platforms",
+      "description": "Platforms for launching and announcing your product",
+      "phase": "launch",
+      "icon": "Rocket",
+      "sortOrder": 1
+    },
+    {
+      "name": "Marketing & SEO",
+      "slug": "marketing-seo",
+      "description": "Tools for marketing, SEO, and growth",
+      "phase": "growth",
+      "icon": "TrendingUp",
+      "sortOrder": 1
+    },
+    {
+      "name": "Payment & Billing",
+      "slug": "payment-billing",
+      "description": "Payment processing and subscription management",
+      "phase": "monetization",
+      "icon": "CreditCard",
+      "sortOrder": 1
+    }
+  ],
+  "tools": [
+    {
+      "name": "ChatGPT",
+      "slug": "chatgpt",
+      "description": "OpenAI's conversational AI for brainstorming, writing, and coding assistance",
+      "websiteUrl": "https://chat.openai.com",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["ai", "nlp"],
+      "categorySlug": "ideation-research",
+      "status": "approved"
+    },
+    {
+      "name": "Claude",
+      "slug": "claude",
+      "description": "Anthropic's AI assistant with strong reasoning and coding capabilities",
+      "websiteUrl": "https://claude.ai",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["ai", "nlp"],
+      "categorySlug": "ideation-research",
+      "status": "approved"
+    },
+    {
+      "name": "GitHub Copilot",
+      "slug": "github-copilot",
+      "description": "AI pair programmer that suggests code completions as you type",
+      "websiteUrl": "https://github.com/features/copilot",
+      "pricingModel": "paid",
+      "startingPrice": 10,
+      "hasFreeTier": false,
+      "hasOpenSource": false,
+      "hasApi": false,
+      "techStack": ["ai", "vscode", "ide"],
+      "categorySlug": "ai-code-assistants",
+      "status": "approved",
+      "affiliateEnabled": true
+    },
+    {
+      "name": "Cursor",
+      "slug": "cursor",
+      "description": "AI-first code editor built on VS Code with powerful AI features",
+      "websiteUrl": "https://cursor.sh",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": false,
+      "techStack": ["ai", "vscode", "editor"],
+      "categorySlug": "ai-code-assistants",
+      "status": "approved"
+    },
+    {
+      "name": "Vercel",
+      "slug": "vercel",
+      "description": "Platform for frontend developers to deploy and host applications",
+      "websiteUrl": "https://vercel.com",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["nextjs", "react", "deployment"],
+      "categorySlug": "deployment-hosting",
+      "status": "approved",
+      "affiliateEnabled": true
+    },
+    {
+      "name": "Supabase",
+      "slug": "supabase",
+      "description": "Open source Firebase alternative with PostgreSQL database",
+      "websiteUrl": "https://supabase.com",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": true,
+      "hasApi": true,
+      "techStack": ["postgresql", "backend", "database"],
+      "categorySlug": "deployment-hosting",
+      "status": "approved",
+      "affiliateEnabled": true
+    },
+    {
+      "name": "Figma",
+      "slug": "figma",
+      "description": "Collaborative interface design tool with AI features",
+      "websiteUrl": "https://figma.com",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["design", "ui", "prototyping"],
+      "categorySlug": "design-ui",
+      "status": "approved",
+      "affiliateEnabled": true
+    },
+    {
+      "name": "Canva",
+      "slug": "canva",
+      "description": "Easy-to-use design tool with AI-powered features",
+      "websiteUrl": "https://canva.com",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["design", "graphics", "ai"],
+      "categorySlug": "design-ui",
+      "status": "approved",
+      "affiliateEnabled": true
+    },
+    {
+      "name": "Product Hunt",
+      "slug": "product-hunt",
+      "description": "Platform to launch and discover new products",
+      "websiteUrl": "https://producthunt.com",
+      "pricingModel": "free",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["launch", "community"],
+      "categorySlug": "launch-platforms",
+      "status": "approved"
+    },
+    {
+      "name": "ConvertKit",
+      "slug": "convertkit",
+      "description": "Email marketing platform for creators",
+      "websiteUrl": "https://convertkit.com",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["email", "marketing"],
+      "categorySlug": "marketing-seo",
+      "status": "approved",
+      "affiliateEnabled": true
+    },
+    {
+      "name": "Stripe",
+      "slug": "stripe",
+      "description": "Payment processing platform for internet businesses",
+      "websiteUrl": "https://stripe.com",
+      "pricingModel": "paid",
+      "hasFreeTier": false,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["payments", "billing", "api"],
+      "categorySlug": "payment-billing",
+      "status": "approved"
+    },
+    {
+      "name": "Paddle",
+      "slug": "paddle",
+      "description": "Complete payments, tax, and subscriptions platform for SaaS",
+      "websiteUrl": "https://paddle.com",
+      "pricingModel": "paid",
+      "hasFreeTier": false,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["payments", "subscriptions", "tax"],
+      "categorySlug": "payment-billing",
+      "status": "approved",
+      "affiliateEnabled": true
+    }
+  ]
+}
