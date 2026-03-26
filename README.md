@@ -84,9 +84,14 @@ cp .env.example .env.local
 # Setup database
 pnpm db:push
 
+# Seed initial data
+pnpm db:seed
+
 # Run development server
 pnpm dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
 ### Environment Variables
 
