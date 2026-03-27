@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { PHASES } from '@/types';
+import { getFeaturedTools } from '@/lib/db/queries';
+import { ToolCard } from '@/components/tool-card';
 import { Search, ArrowRight, Sparkles, Users, Star } from 'lucide-react';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featuredTools = await getFeaturedTools(4);
   return (
     <div className="flex min-h-screen flex-col">
       {/* Navigation */}
@@ -106,25 +109,8 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Tool Cards - Placeholder */}
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-lg border bg-card p-4">
-              <div className="flex items-start gap-3">
-                <div className="h-10 w-10 rounded-lg bg-muted" />
-                <div className="flex-1">
-                  <h3 className="font-semibold">Tool Name</h3>
-                  <p className="text-xs text-muted-foreground">Category</p>
-                </div>
-              </div>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Short description of the tool goes here...
-              </p>
-              <div className="mt-4 flex items-center gap-2">
-                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
-                  Freemium
-                </span>
-              </div>
-            </div>
+          {featuredTools.map((tool) => (
+            <ToolCard key={tool.id} tool={tool} />
           ))}
         </div>
       </section>
@@ -158,9 +144,6 @@ export default function HomePage() {
           <div className="flex gap-4">
             <Link href="/about" className="text-sm text-muted-foreground hover:text-primary">
               About
-            </Link>
-            <Link href="/privacy" className="text-sm text-muted-foreground hover:text-primary">
-              Privacy
             </Link>
           </div>
         </div>

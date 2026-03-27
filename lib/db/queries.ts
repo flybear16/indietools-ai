@@ -1,0 +1,47 @@
+import { db } from './index';
+import { tools, categories } from './schema';
+import { eq, desc } from 'drizzle-orm';
+
+export async function getAllTools() {
+  return db.query.tools.findMany({
+    with: {
+      category: true,
+    },
+    orderBy: desc(tools.createdAt),
+  });
+}
+
+export async function getToolBySlug(slug: string) {
+  return db.query.tools.findFirst({
+    where: eq(tools.slug, slug),
+    with: {
+      category: true,
+    },
+  });
+}
+
+export async function getAllCategories() {
+  return db.query.categories.findMany({
+    orderBy: categories.sortOrder,
+  });
+}
+
+export async function getToolsByCategory(categorySlug: string) {
+  return db.query.tools.findMany({
+    where: eq(categories.slug, categorySlug),
+    with: {
+      category: true,
+    },
+    orderBy: desc(tools.createdAt),
+  });
+}
+
+export async function getFeaturedTools(limit = 8) {
+  return db.query.tools.findMany({
+    with: {
+      category: true,
+    },
+    limit,
+    orderBy: desc(tools.createdAt),
+  });
+}

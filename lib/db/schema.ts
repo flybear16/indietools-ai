@@ -1,4 +1,5 @@
 import { pgTable, uuid, varchar, text, boolean, timestamp, decimal, integer, pgEnum } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 export const pricingModelEnum = pgEnum('pricing_model', ['free', 'freemium', 'paid', 'open_source']);
 export const toolStatusEnum = pgEnum('tool_status', ['pending', 'approved', 'rejected']);
@@ -70,3 +71,31 @@ export type NewCategory = typeof categories.$inferInsert;
 export type NewTool = typeof tools.$inferInsert;
 export type NewUser = typeof users.$inferInsert;
 export type NewReview = typeof reviews.$inferInsert;
+
+// Relations
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  tools: many(tools),
+}));
+
+export const toolsRelations = relations(tools, ({ one, many }) => ({
+  category: one(categories, {
+    fields: [tools.categoryId],
+    references: [categories.id],
+  }),
+  reviews: many(reviews),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  reviews: many(reviews),
+}));
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  tool: one(tools, {
+    fields: [reviews.toolId],
+    references: [tools.id],
+  }),
+  user: one(users, {
+    fields: [reviews.userId],
+    references: [users.id],
+  }),
+}));

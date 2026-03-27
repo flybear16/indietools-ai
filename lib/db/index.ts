@@ -11,8 +11,8 @@ if (!connectionString) {
 // For migrations
 export const migrationClient = postgres(connectionString, { max: 1 });
 
-// For queries
-const queryClient = postgres(connectionString);
+// For queries - with prepared statements disabled for better compatibility
+const queryClient = postgres(connectionString, { prepare: false });
 export const db = drizzle(queryClient, { schema });
 
 export { schema };
