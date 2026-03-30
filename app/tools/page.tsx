@@ -115,7 +115,7 @@ export default async function ToolsPage({ searchParams }: Props) {
                   href={(selectedPricing.length > 0 
                     ? `/tools?pricing=${selectedPricing.join('&pricing=')}` 
                     : "/tools") as any} 
-                  className={`block text-sm ${!selectedCategory ? 'text-primary font-medium' : 'text-muted-foreground hover:text-primary'}`}
+                  className={`block text-sm rounded-md px-2 py-1 -mx-2 ${!selectedCategory ? 'text-primary font-medium bg-primary/10' : 'text-muted-foreground hover:text-primary hover:bg-muted'}`}
                 >
                   All Categories
                 </Link>
@@ -131,7 +131,7 @@ export default async function ToolsPage({ searchParams }: Props) {
                     <Link
                       key={category.id}
                       href={categoryUrl as any}
-                      className={`block text-sm ${isSelected ? 'text-primary font-medium' : 'text-muted-foreground hover:text-primary'}`}
+                      className={`block text-sm rounded-md px-2 py-1 -mx-2 transition-colors ${isSelected ? 'text-primary font-medium bg-primary/10' : 'text-muted-foreground hover:text-primary hover:bg-muted'}`}
                     >
                       {category.name}
                     </Link>
