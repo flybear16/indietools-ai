@@ -219,8 +219,20 @@ export default async function ToolsPage({ searchParams }: Props) {
               ))}
             </div>
             {filteredTools.length === 0 && (
-              <div className="text-center py-12 text-muted-foreground">
-                No tools found matching the selected filters.
+              <div className="text-center py-12">
+                <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">No tools found</h3>
+                <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+                  Try adjusting your filters or search query to find what you&apos;re looking for.
+                </p>
+                <Link 
+                  href="/tools"
+                  className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                >
+                  Clear all filters
+                </Link>
               </div>
             )}
           </main>
