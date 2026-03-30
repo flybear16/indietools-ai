@@ -10,7 +10,7 @@ export default async function HomePage() {
     <div className="flex min-h-screen flex-col">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
+        <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl">
             <Sparkles className="h-6 w-6" />
             IndieTools.ai
@@ -33,7 +33,7 @@ export default async function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="container flex flex-col items-center justify-center gap-6 pb-8 pt-16 md:pt-24">
+      <section className="mx-auto flex w-full max-w-7xl flex-col items-center justify-center gap-6 px-4 pb-8 pt-16 sm:px-6 md:pt-24 lg:px-8">
         <div className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
             AI Tools for{' '}
@@ -75,7 +75,7 @@ export default async function HomePage() {
       </section>
 
       {/* Phases Section */}
-      <section className="container py-12">
+      <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <h2 className="text-center text-2xl font-bold mb-8">Browse by Phase</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PHASES.map((phase) => (
@@ -101,7 +101,7 @@ export default async function HomePage() {
       </section>
 
       {/* Featured Tools */}
-      <section className="container py-12">
+      <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold">Featured Tools</h2>
           <Link href="/tools" className="text-sm text-primary hover:underline">
@@ -116,7 +116,7 @@ export default async function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="container py-12">
+      <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="rounded-lg border bg-muted/50 p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">Have a tool to share?</h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
@@ -133,7 +133,7 @@ export default async function HomePage() {
 
       {/* Footer */}
       <footer className="border-t py-8">
-        <div className="container flex flex-col items-center justify-between gap-4 md:flex-row">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:px-6 md:flex-row lg:px-8">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
             <span className="font-semibold">IndieTools.ai</span>

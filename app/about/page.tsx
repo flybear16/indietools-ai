@@ -6,7 +6,7 @@ export default function AboutPage() {
     <div className="flex min-h-screen flex-col">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-        <div className="container flex h-14 items-center">
+        <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl">
             <Sparkles className="h-6 w-6" />
             IndieTools.ai
@@ -29,7 +29,7 @@ export default function AboutPage() {
       </header>
 
       {/* Content */}
-      <main className="container py-12 flex-1">
+      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 flex-1">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-4xl font-bold mb-6">About IndieTools.ai</h1>
           
@@ -70,7 +70,7 @@ export default function AboutPage() {
 
       {/* Footer */}
       <footer className="border-t py-8">
-        <div className="container flex flex-col items-center justify-between gap-4 md:flex-row">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:px-6 md:flex-row lg:px-8">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
             <span className="font-semibold">IndieTools.ai</span>

@@ -11,7 +11,7 @@ export default function SubmitPage() {
     return (
       <div className="flex min-h-screen flex-col">
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-          <div className="container flex h-14 items-center">
+          <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl">
               <Sparkles className="h-6 w-6" />
               IndieTools.ai
@@ -33,7 +33,7 @@ export default function SubmitPage() {
           </div>
         </header>
 
-        <main className="container py-12 flex-1 flex items-center justify-center">
+        <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
             <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Send className="h-8 w-8 text-green-600" />
@@ -58,7 +58,7 @@ export default function SubmitPage() {
     <div className="flex min-h-screen flex-col">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-        <div className="container flex h-14 items-center">
+        <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl">
             <Sparkles className="h-6 w-6" />
             IndieTools.ai
@@ -81,7 +81,7 @@ export default function SubmitPage() {
       </header>
 
       {/* Content */}
-      <main className="container py-12 flex-1">
+      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 flex-1">
         <div className="max-w-xl mx-auto">
           <h1 className="text-3xl font-bold mb-2">Submit a Tool</h1>
           <p className="text-muted-foreground mb-8">
@@ -167,7 +167,7 @@ export default function SubmitPage() {
 
       {/* Footer */}
       <footer className="border-t py-8">
-        <div className="container flex flex-col items-center justify-between gap-4 md:flex-row">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:px-6 md:flex-row lg:px-8">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
             <span className="font-semibold">IndieTools.ai</span>

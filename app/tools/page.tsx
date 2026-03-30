@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getAllTools, getAllCategories } from '@/lib/db/queries';
 import { ToolCard } from '@/components/tool-card';
+import { SearchInput } from '@/components/search-input';
 import { Search, Filter } from 'lucide-react';
 import { PRICING_MODELS } from '@/types';
 
@@ -23,12 +24,15 @@ export default async function ToolsPage({ searchParams }: Props) {
   const categoryParam = resolvedSearchParams.category;
   const selectedCategory = typeof categoryParam === 'string' ? categoryParam : null;
   
+  // Get search query from URL
+  const searchQuery = typeof resolvedSearchParams.q === 'string' ? resolvedSearchParams.q : '';
+  
   // Find the selected category object
   const selectedCategoryObj = selectedCategory !== null
     ? categories.find(c => c.slug === selectedCategory as string) 
     : null;
   
-  // Filter tools by category and pricing
+  // Filter tools by category, pricing, and search query
   let filteredTools = tools;
   
   if (selectedCategoryObj) {
@@ -37,6 +41,16 @@ export default async function ToolsPage({ searchParams }: Props) {
   
   if (selectedPricing.length > 0) {
     filteredTools = filteredTools.filter(tool => selectedPricing.includes(tool.pricingModel as string));
+  }
+  
+  // Search filter (case-insensitive, matches name and description)
+  if (searchQuery.trim()) {
+    const query = searchQuery.toLowerCase().trim();
+    filteredTools = filteredTools.filter(tool => 
+      tool.name.toLowerCase().includes(query) ||
+      (tool.description?.toLowerCase().includes(query) ?? false) ||
+      (tool.category?.name?.toLowerCase().includes(query) ?? false)
+    );
   }
 
   return (
@@ -87,11 +101,7 @@ export default async function ToolsPage({ searchParams }: Props) {
                 <Search className="h-4 w-4" />
                 Search
               </h3>
-              <input
-                type="text"
-                placeholder="Search tools..."
-                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-              />
+              <SearchInput />
             </div>
 
             {/* Categories */}
@@ -170,18 +180,27 @@ export default async function ToolsPage({ searchParams }: Props) {
 
           {/* Tools Grid */}
           <main className="flex-1">
-            {selectedPricing.length > 0 && (
-              <div className="mb-4 flex items-center gap-2">
+            {(selectedPricing.length > 0 || searchQuery) && (
+              <div className="mb-4 flex items-center gap-2 flex-wrap">
                 <span className="text-sm text-muted-foreground">Filtered by:</span>
+                {searchQuery && (
+                  <Link
+                    href={`/tools${selectedCategory ? `?category=${selectedCategory}` : ''}${selectedCategory && selectedPricing.length > 0 ? '&' : selectedPricing.length > 0 ? '?' : ''}${selectedPricing.length > 0 ? selectedPricing.map(p => `pricing=${p}`).join('&') : ''}` as any}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20"
+                  >
+                    Search: "{searchQuery}" ×
+                  </Link>
+                )}
                 {selectedPricing.map(p => {
                   const label = PRICING_MODELS.find(m => m.value === p)?.label || p;
                   const newPricing = selectedPricing.filter(x => x !== p);
-                  const categoryQuery = selectedCategory ? `category=${selectedCategory}&` : '';
+                  const categoryQuery = selectedCategory ? `category=${selectedCategory}` : '';
+                  const searchQ = searchQuery ? `q=${encodeURIComponent(searchQuery)}` : '';
                   const pricingQuery = newPricing.length > 0 
                     ? newPricing.map(x => `pricing=${x}`).join('&') 
                     : '';
-                  const fullQuery = categoryQuery + pricingQuery;
-                  const url = fullQuery ? `/tools?${fullQuery}` : '/tools';
+                  const params = [categoryQuery, searchQ, pricingQuery].filter(Boolean).join('&');
+                  const url = params ? `/tools?${params}` : '/tools';
                   return (
                     <Link
                       key={p}
