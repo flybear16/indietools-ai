@@ -5,23 +5,39 @@ import { Search, Filter } from 'lucide-react';
 import { PRICING_MODELS } from '@/types';
 
 interface Props {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function ToolsPage({ searchParams }: Props) {
+  const resolvedSearchParams = await searchParams;
   const tools = await getAllTools();
   const categories = await getAllCategories();
   
   // Get selected pricing filters from URL
-  const pricingParam = searchParams.pricing;
+  const pricingParam = resolvedSearchParams.pricing;
   const selectedPricing = pricingParam 
     ? Array.isArray(pricingParam) ? pricingParam : [pricingParam]
     : [];
   
-  // Filter tools by pricing if any selected
-  const filteredTools = selectedPricing.length > 0
-    ? tools.filter(tool => selectedPricing.includes(tool.pricingModel))
-    : tools;
+  // Get selected category filter from URL
+  const categoryParam = resolvedSearchParams.category;
+  const selectedCategory = typeof categoryParam === 'string' ? categoryParam : null;
+  
+  // Find the selected category object
+  const selectedCategoryObj = selectedCategory !== null
+    ? categories.find(c => c.slug === selectedCategory as string) 
+    : null;
+  
+  // Filter tools by category and pricing
+  let filteredTools = tools;
+  
+  if (selectedCategoryObj) {
+    filteredTools = filteredTools.filter(tool => tool.categoryId === selectedCategoryObj.id);
+  }
+  
+  if (selectedPricing.length > 0) {
+    filteredTools = filteredTools.filter(tool => selectedPricing.includes(tool.pricingModel as string));
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -53,7 +69,10 @@ export default async function ToolsPage({ searchParams }: Props) {
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold">All AI Tools</h1>
           <p className="text-muted-foreground mt-2">
-            Browse {tools.length} AI tools for indie developers
+            {selectedCategoryObj || selectedPricing.length > 0 
+              ? `Showing ${filteredTools.length} of ${tools.length} tools` 
+              : `Browse ${tools.length} AI tools for indie developers`}
+            {selectedCategoryObj && ` in ${selectedCategoryObj.name}`}
           </p>
         </div>
       </section>
@@ -83,20 +102,31 @@ export default async function ToolsPage({ searchParams }: Props) {
               </h3>
               <div className="space-y-2">
                 <Link 
-                  href="/tools" 
-                  className="block text-sm text-primary font-medium"
+                  href={(selectedPricing.length > 0 
+                    ? `/tools?pricing=${selectedPricing.join('&pricing=')}` 
+                    : "/tools") as any} 
+                  className={`block text-sm ${!selectedCategory ? 'text-primary font-medium' : 'text-muted-foreground hover:text-primary'}`}
                 >
                   All Categories
                 </Link>
-                {categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/tools?category=${category.slug}`}
-                    className="block text-sm text-muted-foreground hover:text-primary"
-                  >
-                    {category.name}
-                  </Link>
-                ))}
+                {categories.map((category) => {
+                  const isSelected = selectedCategory === category.slug;
+                  // Build URL with both category and pricing filters
+                  const pricingQuery = selectedPricing.length > 0 
+                    ? `&pricing=${selectedPricing.join('&pricing=')}` 
+                    : '';
+                  const categoryUrl = `/tools?category=${category.slug}${pricingQuery}`;
+                  
+                  return (
+                    <Link
+                      key={category.id}
+                      href={categoryUrl as any}
+                      className={`block text-sm ${isSelected ? 'text-primary font-medium' : 'text-muted-foreground hover:text-primary'}`}
+                    >
+                      {category.name}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 
@@ -109,14 +139,19 @@ export default async function ToolsPage({ searchParams }: Props) {
                   const newPricing = isChecked
                     ? selectedPricing.filter(p => p !== pricing.value)
                     : [...selectedPricing, pricing.value];
+                  
+                  // Build URL with both category and pricing filters
+                  const categoryQuery = selectedCategory ? `category=${selectedCategory}` : '';
                   const pricingQuery = newPricing.length > 0 
-                    ? `?pricing=${newPricing.join('&pricing=')}` 
+                    ? newPricing.map(p => `pricing=${p}`).join('&') 
                     : '';
+                  const fullQuery = [categoryQuery, pricingQuery].filter(Boolean).join('&');
+                  const pricingUrl = fullQuery ? `/tools?${fullQuery}` : '/tools';
                   
                   return (
                     <Link
                       key={pricing.value}
-                      href={`/tools${pricingQuery}`}
+                      href={pricingUrl as any}
                       className="flex items-center gap-2 text-sm hover:text-primary"
                     >
                       <input 
@@ -141,13 +176,16 @@ export default async function ToolsPage({ searchParams }: Props) {
                 {selectedPricing.map(p => {
                   const label = PRICING_MODELS.find(m => m.value === p)?.label || p;
                   const newPricing = selectedPricing.filter(x => x !== p);
+                  const categoryQuery = selectedCategory ? `category=${selectedCategory}&` : '';
                   const pricingQuery = newPricing.length > 0 
-                    ? `?pricing=${newPricing.join('&pricing=')}` 
+                    ? newPricing.map(x => `pricing=${x}`).join('&') 
                     : '';
+                  const fullQuery = categoryQuery + pricingQuery;
+                  const url = fullQuery ? `/tools?${fullQuery}` : '/tools';
                   return (
                     <Link
                       key={p}
-                      href={`/tools${pricingQuery}`}
+                      href={url as any}
                       className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20"
                     >
                       {label} ×
