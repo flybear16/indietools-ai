@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getToolBySlug } from '@/lib/db/queries';
+import { getToolBySlug, getAllTools } from '@/lib/db/queries';
+import { ToolCard } from '@/components/tool-card';
 import { 
   ArrowLeft, 
   ExternalLink, 
@@ -25,6 +26,12 @@ export default async function ToolPage({ params }: ToolPageProps) {
   if (!tool) {
     notFound();
   }
+
+  // Get related tools (same category, excluding current tool)
+  const allTools = await getAllTools();
+  const relatedTools = allTools
+    .filter(t => t.categoryId === tool.categoryId && t.id !== tool.id)
+    .slice(0, 3);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -252,6 +259,18 @@ export default async function ToolPage({ params }: ToolPageProps) {
           </aside>
         </div>
       </section>
+
+      {/* Related Tools */}
+      {relatedTools.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 border-t">
+          <h2 className="text-xl font-semibold mb-6">More {tool.category?.name} Tools</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedTools.map((relatedTool) => (
+              <ToolCard key={relatedTool.id} tool={relatedTool} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="border-t py-8 mt-auto">
