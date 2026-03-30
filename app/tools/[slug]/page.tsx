@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import { getToolBySlug, getAllTools } from '@/lib/db/queries';
 import { ToolCard } from '@/components/tool-card';
 import { 
@@ -17,6 +18,27 @@ interface ToolPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const tool = await getToolBySlug(slug);
+
+  if (!tool) {
+    return {
+      title: 'Tool Not Found - IndieTools.ai',
+    };
+  }
+
+  return {
+    title: `${tool.name} - ${tool.category?.name} Tool | IndieTools.ai`,
+    description: tool.description || `Learn about ${tool.name}, a ${tool.category?.name} tool for indie developers.`,
+    openGraph: {
+      title: `${tool.name} - ${tool.category?.name} Tool`,
+      description: tool.description || undefined,
+      type: 'article',
+    },
+  };
 }
 
 export default async function ToolPage({ params }: ToolPageProps) {
