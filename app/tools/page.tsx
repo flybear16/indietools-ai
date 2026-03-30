@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { getAllTools, getAllCategories } from '@/lib/db/queries';
 import { ToolCard } from '@/components/tool-card';
 import { SearchInput } from '@/components/search-input';
+import { ToolsLoading } from '@/components/tools-loading';
 import { Search, Filter } from 'lucide-react';
 import { PRICING_MODELS } from '@/types';
 
@@ -180,6 +182,7 @@ export default async function ToolsPage({ searchParams }: Props) {
 
           {/* Tools Grid */}
           <main className="flex-1">
+            <Suspense fallback={<ToolsLoading />}>
             {(selectedPricing.length > 0 || searchQuery) && (
               <div className="mb-4 flex items-center gap-2 flex-wrap">
                 <span className="text-sm text-muted-foreground">Filtered by:</span>
@@ -235,6 +238,7 @@ export default async function ToolsPage({ searchParams }: Props) {
                 </Link>
               </div>
             )}
+            </Suspense>
           </main>
         </div>
       </div>
