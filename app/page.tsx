@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { PHASES } from '@/types';
 import { getFeaturedTools } from '@/lib/db/queries';
 import { ToolCard } from '@/components/tool-card';
-import { Search, ArrowRight, Sparkles, Users, Star } from 'lucide-react';
+import { HomeSearch } from '@/components/home-search';
+import { ArrowRight, Sparkles, Users, Star } from 'lucide-react';
 
 export default async function HomePage() {
   const featuredTools = await getFeaturedTools(4);
@@ -46,16 +47,7 @@ export default async function HomePage() {
         </div>
 
         {/* Search Bar */}
-        <div className="w-full max-w-md">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search tools..."
-              className="w-full rounded-lg border bg-background px-9 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-          </div>
-        </div>
+        <HomeSearch />
 
         {/* Stats */}
         <div className="flex gap-8 text-sm text-muted-foreground">
