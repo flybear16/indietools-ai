@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { getToolBySlug, getAllTools } from '@/lib/db/queries';
@@ -95,12 +96,14 @@ export default async function ToolPage({ params }: ToolPageProps) {
       <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row gap-6 items-start">
           {/* Logo */}
-          <div className="h-24 w-24 rounded-2xl bg-muted flex items-center justify-center text-4xl font-bold text-muted-foreground">
+          <div className="h-24 w-24 rounded-2xl bg-muted flex items-center justify-center text-4xl font-bold text-muted-foreground relative overflow-hidden">
             {tool.logoUrl ? (
-              <img 
+              <Image 
                 src={tool.logoUrl} 
-                alt={tool.name} 
-                className="h-16 w-16 object-contain"
+                alt={tool.name}
+                width={64}
+                height={64}
+                className="object-contain"
               />
             ) : (
               tool.name.charAt(0)

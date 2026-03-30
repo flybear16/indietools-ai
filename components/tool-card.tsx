@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Star, ExternalLink } from 'lucide-react';
 
 interface Tool {
@@ -46,12 +47,14 @@ export function ToolCard({ tool }: ToolCardProps) {
       className="group flex flex-col rounded-lg border bg-card p-4 hover:border-primary hover:shadow-sm transition-all"
     >
       <div className="flex items-start gap-3">
-        <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center text-lg font-bold text-muted-foreground">
+        <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center text-lg font-bold text-muted-foreground relative overflow-hidden">
           {tool.logoUrl ? (
-            <img 
+            <Image 
               src={tool.logoUrl} 
-              alt={tool.name} 
-              className="h-8 w-8 object-contain"
+              alt={tool.name}
+              width={32}
+              height={32}
+              className="object-contain"
             />
           ) : (
             tool.name.charAt(0)
