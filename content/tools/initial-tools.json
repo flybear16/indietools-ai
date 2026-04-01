@@ -85,6 +85,45 @@
       "status": "approved"
     },
     {
+      "name": "Perplexity AI",
+      "slug": "perplexity",
+      "description": "AI-powered search engine for research and information discovery",
+      "websiteUrl": "https://perplexity.ai",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": false,
+      "techStack": ["ai", "search"],
+      "categorySlug": "ideation-research",
+      "status": "approved"
+    },
+    {
+      "name": "Notion AI",
+      "slug": "notion-ai",
+      "description": "AI-powered workspace for notes, docs, and project planning",
+      "websiteUrl": "https://notion.so",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["productivity", "docs"],
+      "categorySlug": "ideation-research",
+      "status": "approved"
+    },
+    {
+      "name": "Miro",
+      "slug": "miro",
+      "description": "Online collaborative whiteboard for brainstorming and planning",
+      "websiteUrl": "https://miro.com",
+      "pricingModel": "freemium",
+      "hasFreeTier": true,
+      "hasOpenSource": false,
+      "hasApi": true,
+      "techStack": ["whiteboard", "collaboration"],
+      "categorySlug": "ideation-research",
+      "status": "approved"
+    },
+    {
       "name": "GitHub Copilot",
       "slug": "github-copilot",
       "description": "AI pair programmer that suggests code completions as you type",
@@ -151,22 +190,7 @@
       "hasApi": true,
       "techStack": ["design", "ui", "prototyping"],
       "categorySlug": "design-ui",
-      "status": "approved",
-      "affiliateEnabled": true
-    },
-    {
-      "name": "Canva",
-      "slug": "canva",
-      "description": "Easy-to-use design tool with AI-powered features",
-      "websiteUrl": "https://canva.com",
-      "pricingModel": "freemium",
-      "hasFreeTier": true,
-      "hasOpenSource": false,
-      "hasApi": true,
-      "techStack": ["design", "graphics", "ai"],
-      "categorySlug": "design-ui",
-      "status": "approved",
-      "affiliateEnabled": true
+      "status": "approved"
     },
     {
       "name": "Product Hunt",
@@ -182,45 +206,17 @@
       "status": "approved"
     },
     {
-      "name": "ConvertKit",
-      "slug": "convertkit",
-      "description": "Email marketing platform for creators",
-      "websiteUrl": "https://convertkit.com",
-      "pricingModel": "freemium",
-      "hasFreeTier": true,
-      "hasOpenSource": false,
-      "hasApi": true,
-      "techStack": ["email", "marketing"],
-      "categorySlug": "marketing-seo",
-      "status": "approved",
-      "affiliateEnabled": true
-    },
-    {
       "name": "Stripe",
       "slug": "stripe",
       "description": "Payment processing platform for internet businesses",
       "websiteUrl": "https://stripe.com",
       "pricingModel": "paid",
-      "hasFreeTier": false,
+      "hasFreeTier": true,
       "hasOpenSource": false,
       "hasApi": true,
-      "techStack": ["payments", "billing", "api"],
+      "techStack": ["payments", "saas"],
       "categorySlug": "payment-billing",
       "status": "approved"
-    },
-    {
-      "name": "Paddle",
-      "slug": "paddle",
-      "description": "Complete payments, tax, and subscriptions platform for SaaS",
-      "websiteUrl": "https://paddle.com",
-      "pricingModel": "paid",
-      "hasFreeTier": false,
-      "hasOpenSource": false,
-      "hasApi": true,
-      "techStack": ["payments", "subscriptions", "tax"],
-      "categorySlug": "payment-billing",
-      "status": "approved",
-      "affiliateEnabled": true
     }
   ]
 }

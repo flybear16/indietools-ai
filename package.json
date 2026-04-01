@@ -6,7 +6,7 @@
   "author": "flybear16",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3206",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
