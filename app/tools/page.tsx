@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { getAllTools, getAllCategories } from '@/lib/db/queries';
 import { ToolCard } from '@/components/tool-card';
 import { SearchInput } from '@/components/search-input';
+import { AdvancedFilter } from '@/components/advanced-filter';
 import { ToolsLoading } from '@/components/tools-loading';
 import { Search, Filter } from 'lucide-react';
 import { PRICING_MODELS } from '@/types';
@@ -29,20 +30,62 @@ export default async function ToolsPage({ searchParams }: Props) {
   // Get search query from URL
   const searchQuery = typeof resolvedSearchParams.q === 'string' ? resolvedSearchParams.q : '';
   
+  // Get advanced filters from URL
+  const freeTierParam = resolvedSearchParams.freeTier;
+  const hasFreeTier = freeTierParam === '1' ? true : null;
+  
+  const openSourceParam = resolvedSearchParams.openSource;
+  const hasOpenSource = openSourceParam === '1' ? true : null;
+  
+  const hasApiParam = resolvedSearchParams.hasApi;
+  const hasApi = hasApiParam === '1' ? true : null;
+  
+  const techParam = resolvedSearchParams.tech;
+  const selectedTechStack = typeof techParam === 'string' 
+    ? techParam.split(',').filter(Boolean) 
+    : [];
+  
   // Find the selected category object
   const selectedCategoryObj = selectedCategory !== null
     ? categories.find(c => c.slug === selectedCategory as string) 
     : null;
   
-  // Filter tools by category, pricing, and search query
+  // Filter tools by all criteria
   let filteredTools = tools;
   
+  // Category filter
   if (selectedCategoryObj) {
     filteredTools = filteredTools.filter(tool => tool.categoryId === selectedCategoryObj.id);
   }
   
+  // Pricing filter (multi-select)
   if (selectedPricing.length > 0) {
-    filteredTools = filteredTools.filter(tool => selectedPricing.includes(tool.pricingModel as string));
+    filteredTools = filteredTools.filter(tool => 
+      selectedPricing.includes(tool.pricingModel as string)
+    );
+  }
+  
+  // Free tier filter
+  if (hasFreeTier === true) {
+    filteredTools = filteredTools.filter(tool => tool.hasFreeTier === true);
+  }
+  
+  // Open source filter
+  if (hasOpenSource === true) {
+    filteredTools = filteredTools.filter(tool => tool.hasOpenSource === true);
+  }
+  
+  // API support filter
+  if (hasApi === true) {
+    filteredTools = filteredTools.filter(tool => tool.hasApi === true);
+  }
+  
+  // Tech stack filter (tool matches ANY selected tech)
+  if (selectedTechStack.length > 0) {
+    filteredTools = filteredTools.filter(tool => {
+      const toolTech = tool.techStack || [];
+      return selectedTechStack.some(tech => toolTech.includes(tech));
+    });
   }
   
   // Search filter (case-insensitive, matches name and description)
@@ -54,6 +97,16 @@ export default async function ToolsPage({ searchParams }: Props) {
       (tool.category?.name?.toLowerCase().includes(query) ?? false)
     );
   }
+
+  // Build active filter count
+  const activeFilterCount = [
+    selectedPricing.length > 0,
+    hasFreeTier === true,
+    hasOpenSource === true,
+    hasApi === true,
+    selectedTechStack.length > 0,
+    !!selectedCategory,
+  ].filter(Boolean).length;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -85,8 +138,8 @@ export default async function ToolsPage({ searchParams }: Props) {
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold">All AI Tools</h1>
           <p className="text-muted-foreground mt-2">
-            {selectedCategoryObj || selectedPricing.length > 0 
-              ? `Showing ${filteredTools.length} of ${tools.length} tools` 
+            {activeFilterCount > 0
+              ? `Showing ${filteredTools.length} of ${tools.length} tools`
               : `Browse ${tools.length} AI tools for indie developers`}
             {selectedCategoryObj && ` in ${selectedCategoryObj.name}`}
           </p>
@@ -178,17 +231,35 @@ export default async function ToolsPage({ searchParams }: Props) {
                 })}
               </div>
             </div>
+
+            {/* Advanced Filters */}
+            <div className="border-t pt-4">
+              <AdvancedFilter 
+                hasFreeTier={hasFreeTier}
+                hasOpenSource={hasOpenSource}
+                hasApi={hasApi}
+                techStack={selectedTechStack}
+              />
+            </div>
           </aside>
 
           {/* Tools Grid */}
           <main className="flex-1">
             <Suspense fallback={<ToolsLoading />}>
-            {(selectedPricing.length > 0 || searchQuery) && (
+            {/* Active Filters Display */}
+            {(selectedPricing.length > 0 || searchQuery || hasFreeTier || hasOpenSource || hasApi || selectedTechStack.length > 0) && (
               <div className="mb-4 flex items-center gap-2 flex-wrap">
-                <span className="text-sm text-muted-foreground">Filtered by:</span>
+                <span className="text-sm text-muted-foreground">Active filters:</span>
                 {searchQuery && (
                   <Link
-                    href={`/tools${selectedCategory ? `?category=${selectedCategory}` : ''}${selectedCategory && selectedPricing.length > 0 ? '&' : selectedPricing.length > 0 ? '?' : ''}${selectedPricing.length > 0 ? selectedPricing.map(p => `pricing=${p}`).join('&') : ''}` as any}
+                    href={`/tools?${[
+                      selectedCategory ? `category=${selectedCategory}` : '',
+                      selectedPricing.length > 0 ? selectedPricing.map(p => `pricing=${p}`).join('&') : '',
+                      hasFreeTier ? 'freeTier=1' : '',
+                      hasOpenSource ? 'openSource=1' : '',
+                      hasApi ? 'hasApi=1' : '',
+                      selectedTechStack.length > 0 ? `tech=${selectedTechStack.join(',')}` : '',
+                    ].filter(Boolean).join('&')}` as any}
                     className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20"
                   >
                     Search: "{searchQuery}" ×
@@ -197,12 +268,15 @@ export default async function ToolsPage({ searchParams }: Props) {
                 {selectedPricing.map(p => {
                   const label = PRICING_MODELS.find(m => m.value === p)?.label || p;
                   const newPricing = selectedPricing.filter(x => x !== p);
-                  const categoryQuery = selectedCategory ? `category=${selectedCategory}` : '';
-                  const searchQ = searchQuery ? `q=${encodeURIComponent(searchQuery)}` : '';
-                  const pricingQuery = newPricing.length > 0 
-                    ? newPricing.map(x => `pricing=${x}`).join('&') 
-                    : '';
-                  const params = [categoryQuery, searchQ, pricingQuery].filter(Boolean).join('&');
+                  const params = [
+                    selectedCategory ? `category=${selectedCategory}` : '',
+                    searchQuery ? `q=${encodeURIComponent(searchQuery)}` : '',
+                    hasFreeTier ? 'freeTier=1' : '',
+                    hasOpenSource ? 'openSource=1' : '',
+                    hasApi ? 'hasApi=1' : '',
+                    selectedTechStack.length > 0 ? `tech=${selectedTechStack.join(',')}` : '',
+                    newPricing.length > 0 ? newPricing.map(x => `pricing=${x}`).join('&') : '',
+                  ].filter(Boolean).join('&');
                   const url = params ? `/tools?${params}` : '/tools';
                   return (
                     <Link
@@ -214,6 +288,74 @@ export default async function ToolsPage({ searchParams }: Props) {
                     </Link>
                   );
                 })}
+                {hasFreeTier && (
+                  <Link
+                    href={`/tools?${[
+                      selectedCategory ? `category=${selectedCategory}` : '',
+                      selectedPricing.length > 0 ? selectedPricing.map(p => `pricing=${p}`).join('&') : '',
+                      searchQuery ? `q=${encodeURIComponent(searchQuery)}` : '',
+                      hasOpenSource ? 'openSource=1' : '',
+                      hasApi ? 'hasApi=1' : '',
+                      selectedTechStack.length > 0 ? `tech=${selectedTechStack.join(',')}` : '',
+                    ].filter(Boolean).join('&')}` as any}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20"
+                  >
+                    Free Tier ×
+                  </Link>
+                )}
+                {hasOpenSource && (
+                  <Link
+                    href={`/tools?${[
+                      selectedCategory ? `category=${selectedCategory}` : '',
+                      selectedPricing.length > 0 ? selectedPricing.map(p => `pricing=${p}`).join('&') : '',
+                      searchQuery ? `q=${encodeURIComponent(searchQuery)}` : '',
+                      hasFreeTier ? 'freeTier=1' : '',
+                      hasApi ? 'hasApi=1' : '',
+                      selectedTechStack.length > 0 ? `tech=${selectedTechStack.join(',')}` : '',
+                    ].filter(Boolean).join('&')}` as any}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20"
+                  >
+                    Open Source ×
+                  </Link>
+                )}
+                {hasApi && (
+                  <Link
+                    href={`/tools?${[
+                      selectedCategory ? `category=${selectedCategory}` : '',
+                      selectedPricing.length > 0 ? selectedPricing.map(p => `pricing=${p}`).join('&') : '',
+                      searchQuery ? `q=${encodeURIComponent(searchQuery)}` : '',
+                      hasFreeTier ? 'freeTier=1' : '',
+                      hasOpenSource ? 'openSource=1' : '',
+                      selectedTechStack.length > 0 ? `tech=${selectedTechStack.join(',')}` : '',
+                    ].filter(Boolean).join('&')}` as any}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20"
+                  >
+                    API Support ×
+                  </Link>
+                )}
+                {selectedTechStack.map(t => (
+                  <Link
+                    key={t}
+                    href={`/tools?${[
+                      selectedCategory ? `category=${selectedCategory}` : '',
+                      selectedPricing.length > 0 ? selectedPricing.map(p => `pricing=${p}`).join('&') : '',
+                      searchQuery ? `q=${encodeURIComponent(searchQuery)}` : '',
+                      hasFreeTier ? 'freeTier=1' : '',
+                      hasOpenSource ? 'openSource=1' : '',
+                      hasApi ? 'hasApi=1' : '',
+                      selectedTechStack.filter(x => x !== t).length > 0 ? `tech=${selectedTechStack.filter(x => x !== t).join(',')}` : '',
+                    ].filter(Boolean).join('&')}` as any}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20"
+                  >
+                    {t} ×
+                  </Link>
+                ))}
+                <Link
+                  href={`/tools${selectedCategory ? `?category=${selectedCategory}` : ''}` as any}
+                  className="text-xs text-muted-foreground hover:text-primary"
+                >
+                  Clear all
+                </Link>
               </div>
             )}
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
