@@ -1,5 +1,5 @@
 import { db } from './index';
-import { tools, categories } from './schema';
+import { tools, categories, useCases, useCaseTools } from './schema';
 import { eq, desc } from 'drizzle-orm';
 
 export async function getAllTools() {
@@ -43,5 +43,47 @@ export async function getFeaturedTools(limit = 8) {
     },
     limit,
     orderBy: desc(tools.createdAt),
+  });
+}
+
+export async function getAllUseCases() {
+  return db.query.useCases.findMany({
+    orderBy: useCases.sortOrder,
+  });
+}
+
+export async function getUseCaseBySlug(slug: string) {
+  return db.query.useCases.findFirst({
+    where: eq(useCases.slug, slug),
+    with: {
+      useCaseTools: {
+        orderBy: useCaseTools.sortOrder,
+        with: {
+          tool: {
+            with: {
+              category: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function getUseCasesWithTools() {
+  return db.query.useCases.findMany({
+    orderBy: useCases.sortOrder,
+    with: {
+      useCaseTools: {
+        orderBy: useCaseTools.sortOrder,
+        with: {
+          tool: {
+            with: {
+              category: true,
+            },
+          },
+        },
+      },
+    },
   });
 }

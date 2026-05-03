@@ -1,0 +1,93 @@
+[
+  {
+    "name": "MVP 开发必备",
+    "slug": "mvp-essentials",
+    "description": "从 0 到 1 快速验证想法，最小成本上线",
+    "icon": "Rocket",
+    "sortOrder": 1,
+    "tools": [
+      { "toolSlug": "chatgpt", "notes": "产品设计 + 头脑风暴首选", "isHighlighted": true, "sortOrder": 1 },
+      { "toolSlug": "cursor", "notes": "AI 代码编辑器，开发效率翻倍", "isHighlighted": true, "sortOrder": 2 },
+      { "toolSlug": "vercel", "notes": "一键部署，Next.js 最爱", "isHighlighted": true, "sortOrder": 3 },
+      { "toolSlug": "supabase", "notes": "开源 Firebase 替代，后端快速上线", "isHighlighted": true, "sortOrder": 4 },
+      { "toolSlug": "stripe", "notes": "收款必备，支持全球支付", "sortOrder": 5 },
+      { "toolSlug": "lovable", "notes": "不会写代码？用这个生成原型", "sortOrder": 6 }
+    ]
+  },
+  {
+    "name": "出海独立开发者",
+    "slug": "indie-hacker-stack",
+    "description": "面向全球用户的工具栈，SEO + 支付 + 分析",
+    "icon": "Globe",
+    "sortOrder": 2,
+    "tools": [
+      { "toolSlug": "chatgpt", "notes": "内容创作 + 营销文案", "isHighlighted": true, "sortOrder": 1 },
+      { "toolSlug": "vercel", "notes": "全球 CDN，访问速度快", "isHighlighted": true, "sortOrder": 2 },
+      { "toolSlug": "mailchimp", "notes": "邮件订阅，用户沉淀", "isHighlighted": true, "sortOrder": 3 },
+      { "toolSlug": "stripe", "notes": "支持多币种，国际收款", "isHighlighted": true, "sortOrder": 4 },
+      { "toolSlug": "posthog", "notes": "产品分析，用户行为追踪", "sortOrder": 5 },
+      { "toolSlug": "ahrefs", "notes": "SEO 分析，关键词研究", "sortOrder": 6 },
+      { "toolSlug": "semrush", "notes": "竞品分析，市场调研", "sortOrder": 7 }
+    ]
+  },
+  {
+    "name": "AI 代码助手横评",
+    "slug": "ai-code-assistants",
+    "description": "主流 AI 编程工具对比，找到最适合你的",
+    "icon": "Code",
+    "sortOrder": 3,
+    "tools": [
+      { "toolSlug": "github-copilot", "notes": "老牌霸主，生态成熟", "isHighlighted": true, "sortOrder": 1 },
+      { "toolSlug": "cursor", "notes": "AI 原生编辑器，创新最强", "isHighlighted": true, "sortOrder": 2 },
+      { "toolSlug": "windsurf", "notes": "Codeium 出品，上下文理解强", "isHighlighted": true, "sortOrder": 3 },
+      { "toolSlug": "bolt-new", "notes": "全栈生成，但代码质量一般", "sortOrder": 4 },
+      { "toolSlug": "claude", "notes": "代码审查 + 重构最强", "sortOrder": 5 }
+    ]
+  },
+  {
+    "name": "低代码创业栈",
+    "slug": "nocode-startup",
+    "description": "不需要程序员，工具搭出完整产品",
+    "icon": "Blocks",
+    "sortOrder": 4,
+    "tools": [
+      { "toolSlug": "lovable", "notes": "AI 生成全栈应用", "isHighlighted": true, "sortOrder": 1 },
+      { "toolSlug": "softr", "notes": "Airtable 上搭 Web 应用", "isHighlighted": true, "sortOrder": 2 },
+      { "toolSlug": "framer", "notes": "设计稿直接转网站", "isHighlighted": true, "sortOrder": 3 },
+      { "toolSlug": "cal-com", "notes": "日程管理，客户预约", "sortOrder": 4 },
+      { "toolSlug": "crisp", "notes": "客服 + 聊天机器人", "sortOrder": 5 },
+      { "toolSlug": "gumroad", "notes": "数字产品销售，收款", "sortOrder": 6 },
+      { "toolSlug": "tally", "notes": "表单收集，用户反馈", "sortOrder": 7 }
+    ]
+  },
+  {
+    "name": "设计+品牌工具链",
+    "slug": "design-brand-stack",
+    "description": "从 Logo 到 UI 到营销素材的设计工具栈",
+    "icon": "Palette",
+    "sortOrder": 5,
+    "tools": [
+      { "toolSlug": "figma", "notes": "UI 设计首选，协作强大", "isHighlighted": true, "sortOrder": 1 },
+      { "toolSlug": "logo-dev", "notes": "API 获取公司 Logo", "isHighlighted": true, "sortOrder": 2 },
+      { "toolSlug": "midjourney", "notes": "AI 生成配图、海报", "isHighlighted": true, "sortOrder": 3 },
+      { "toolSlug": "canva-ai", "notes": "快速做营销素材", "sortOrder": 4 },
+      { "toolSlug": "framer", "notes": "设计稿转高保真网站", "sortOrder": 5 }
+    ]
+  },
+  {
+    "name": "开源技术栈",
+    "slug": "open-source-stack",
+    "description": "避免供应商锁定，全用开源方案",
+    "icon": "Terminal",
+    "sortOrder": 6,
+    "tools": [
+      { "toolSlug": "supabase", "notes": "开源 Firebase 替代", "isHighlighted": true, "sortOrder": 1 },
+      { "toolSlug": "turso", "notes": "边缘 SQLite，分布式", "isHighlighted": true, "sortOrder": 2 },
+      { "toolSlug": "posthog", "notes": "开源分析平台", "isHighlighted": true, "sortOrder": 3 },
+      { "toolSlug": "plausible", "notes": "隐私友好分析，替代 GA", "isHighlighted": true, "sortOrder": 4 },
+      { "toolSlug": "polar", "notes": "开源收款 + 订阅", "sortOrder": 5 },
+      { "toolSlug": "cal-com", "notes": "开源日程管理", "sortOrder": 6 },
+      { "toolSlug": "planetcale", "notes": "MySQL 兼容，Serverless", "sortOrder": 7 }
+    ]
+  }
+]

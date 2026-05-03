@@ -99,3 +99,39 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+// Use Cases (场景化工具推荐)
+export const useCases = pgTable('use_cases', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  description: text('description'),
+  icon: varchar('icon', { length: 100 }),
+  sortOrder: integer('sort_order').default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const useCaseTools = pgTable('use_case_tools', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  useCaseId: uuid('use_case_id').references(() => useCases.id).notNull(),
+  toolId: uuid('tool_id').references(() => tools.id).notNull(),
+  sortOrder: integer('sort_order').default(0),
+  notes: text('notes'),
+  isHighlighted: boolean('is_highlighted').default(false),
+});
+
+// Relations
+export const useCasesRelations = relations(useCases, ({ many }) => ({
+  useCaseTools: many(useCaseTools),
+}));
+
+export const useCaseToolsRelations = relations(useCaseTools, ({ one }) => ({
+  useCase: one(useCases, {
+    fields: [useCaseTools.useCaseId],
+    references: [useCases.id],
+  }),
+  tool: one(tools, {
+    fields: [useCaseTools.toolId],
+    references: [tools.id],
+  }),
+}));
