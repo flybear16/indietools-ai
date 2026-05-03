@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Star, ExternalLink } from 'lucide-react';
+import { CompareButton } from './compare-button';
 
 interface Tool {
   id: string;
@@ -79,9 +80,12 @@ export function ToolCard({ tool }: ToolCardProps) {
         <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${getPricingColor()}`}>
           {getPricingLabel()}
         </span>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-          <span>4.5</span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+            <span>4.5</span>
+          </div>
+          <CompareButton tool={tool as any} />
         </div>
       </div>
     </Link>

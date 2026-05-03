@@ -5,6 +5,7 @@ import { ToolCard } from '@/components/tool-card';
 import { SearchInput } from '@/components/search-input';
 import { AdvancedFilter } from '@/components/advanced-filter';
 import { ToolsLoading } from '@/components/tools-loading';
+import { CompareBar } from '@/components/compare-button';
 import { Search, Filter } from 'lucide-react';
 import { PRICING_MODELS } from '@/types';
 
@@ -394,6 +395,7 @@ export default async function ToolsPage({ searchParams }: Props) {
           </p>
         </div>
       </footer>
+      <CompareBar />
     </div>
   );
 }
