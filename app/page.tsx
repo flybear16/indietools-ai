@@ -3,7 +3,8 @@ import { PHASES } from '@/types';
 import { getFeaturedTools } from '@/lib/db/queries';
 import { ToolCard } from '@/components/tool-card';
 import { HomeSearch } from '@/components/home-search';
-import { ArrowRight, Sparkles, Users, Star } from 'lucide-react';
+import { NewsletterSignup } from '@/components/newsletter-signup';
+import { ArrowRight, Sparkles, Users, Star, Mail } from 'lucide-react';
 
 export default async function HomePage() {
   const featuredTools = await getFeaturedTools(4);
@@ -107,6 +108,29 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Newsletter Section */}
+      <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="rounded-lg border bg-muted/50 p-8">
+          <div className="flex flex-col items-center text-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Mail className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Stay Updated</h2>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Get weekly updates on new AI tools, curated collections, and tips for indie developers.
+              </p>
+            </div>
+            <div className="w-full max-w-md mt-4">
+              <NewsletterSignup source="homepage" />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              No spam. Unsubscribe anytime.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="rounded-lg border bg-muted/50 p-8 text-center">
@@ -137,6 +161,15 @@ export default async function HomePage() {
             <Link href="/about" className="text-sm text-muted-foreground hover:text-primary">
               About
             </Link>
+          </div>
+        </div>
+        {/* Newsletter in Footer */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
+            <span className="text-muted-foreground">Subscribe for updates:</span>
+            <div className="w-full sm:w-auto sm:flex-1 sm:max-w-md">
+              <NewsletterSignup source="footer" />
+            </div>
           </div>
         </div>
       </footer>

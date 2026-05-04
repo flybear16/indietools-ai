@@ -5,6 +5,7 @@ export const pricingModelEnum = pgEnum('pricing_model', ['free', 'freemium', 'pa
 export const toolStatusEnum = pgEnum('tool_status', ['pending', 'approved', 'rejected']);
 export const userRoleEnum = pgEnum('user_role', ['user', 'pro', 'team', 'admin']);
 export const subscriptionStatusEnum = pgEnum('subscription_status', ['active', 'inactive', 'cancelled']);
+export const subscriptionSourceEnum = pgEnum('subscription_source', ['homepage', 'submit_page', 'footer']);
 
 export const categories = pgTable('categories', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -51,6 +52,16 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Newsletter subscriptions (邮箱订阅)
+export const newsletterSubscriptions = pgTable('newsletter_subscriptions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  source: subscriptionSourceEnum('source').default('homepage'),
+  isActive: boolean('is_active').default(true),
+  subscribedAt: timestamp('subscribed_at').defaultNow().notNull(),
+  unsubscribedAt: timestamp('unsubscribed_at'),
+});
+
 export const reviews = pgTable('reviews', {
   id: uuid('id').primaryKey().defaultRandom(),
   toolId: uuid('tool_id').references(() => tools.id).notNull(),
@@ -66,6 +77,7 @@ export type Category = typeof categories.$inferSelect;
 export type Tool = typeof tools.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
+export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
 
 export type NewCategory = typeof categories.$inferInsert;
 export type NewTool = typeof tools.$inferInsert;

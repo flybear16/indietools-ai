@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
 import { SubmitToolForm } from './submit-form';
+import { NewsletterSignup } from '@/components/newsletter-signup';
 import { getAllCategories } from '@/lib/db/queries';
 
 export default async function SubmitPage() {
@@ -41,6 +42,17 @@ export default async function SubmitPage() {
           </p>
 
           <SubmitToolForm categories={categories} />
+
+          {/* Newsletter Signup */}
+          <div className="mt-12 pt-8 border-t">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold mb-2">Stay in the Loop</h3>
+              <p className="text-sm text-muted-foreground">
+                Subscribe for updates on new tools and indie developer tips.
+              </p>
+            </div>
+            <NewsletterSignup source="submit_page" />
+          </div>
         </div>
       </main>
 

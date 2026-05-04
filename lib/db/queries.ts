@@ -1,5 +1,5 @@
 import { db } from './index';
-import { tools, categories, useCases, useCaseTools } from './schema';
+import { tools, categories, useCases, useCaseTools, newsletterSubscriptions } from './schema';
 import { eq, desc } from 'drizzle-orm';
 
 export async function getAllTools() {
@@ -85,5 +85,25 @@ export async function getUseCasesWithTools() {
         },
       },
     },
+  });
+}
+
+// Newsletter subscription
+export async function subscribeEmail(email: string, source: 'homepage' | 'submit_page' | 'footer' = 'homepage') {
+  return db.insert(newsletterSubscriptions).values({
+    email,
+    source,
+  }).onConflictDoNothing().returning();
+}
+
+export async function unsubscribeEmail(email: string) {
+  return db.update(newsletterSubscriptions)
+    .set({ isActive: false, unsubscribedAt: new Date() })
+    .where(eq(newsletterSubscriptions.email, email));
+}
+
+export async function getSubscriptionByEmail(email: string) {
+  return db.query.newsletterSubscriptions.findFirst({
+    where: eq(newsletterSubscriptions.email, email),
   });
 }
