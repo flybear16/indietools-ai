@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { tools } from '@/lib/db/schema';
+import { getAllTools, getToolBySlug, getToolReviewStats } from '@/lib/db/queries';
 import { z } from 'zod';
 
 const submitToolSchema = z.object({
@@ -16,37 +17,60 @@ const submitToolSchema = z.object({
   techStack: z.array(z.string()).optional(),
 });
 
+// GET /api/tools - all tools
+// GET /api/tools?slug=xxx - single tool by slug
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const slug = searchParams.get('slug');
+
+    if (!slug) {
+      const toolsData = await getAllTools();
+      const toolsWithStats = await Promise.all(
+        toolsData.map(async (tool) => {
+          const stats = await getToolReviewStats(tool.id);
+          return { ...tool, reviewStats: stats };
+        })
+      );
+      return NextResponse.json({ tools: toolsWithStats }, { status: 200 });
+    }
+
+    const tool = await getToolBySlug(slug);
+    if (!tool) {
+      return NextResponse.json({ error: 'Tool not found' }, { status: 404 });
+    }
+    const stats = await getToolReviewStats(tool.id);
+    return NextResponse.json({ tool: { ...tool, reviewStats: stats } }, { status: 200 });
+  } catch (error) {
+    console.error('API tools GET error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// POST /api/tools - submit a new tool
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
-    // Validate input
     const validatedData = submitToolSchema.parse(body);
-    
-    // Check if slug already exists
+
     const existingTool = await db.query.tools.findFirst({
       where: (tools, { eq }) => eq(tools.slug, validatedData.slug),
     });
-    
+
     if (existingTool) {
       return NextResponse.json(
         { error: 'Tool with this slug already exists' },
         { status: 409 }
       );
     }
-    
-    // Insert tool
+
     const [newTool] = await db.insert(tools).values({
       ...validatedData,
       status: 'pending',
       affiliateEnabled: false,
     }).returning();
-    
-    return NextResponse.json({
-      success: true,
-      tool: newTool,
-    }, { status: 201 });
-    
+
+    return NextResponse.json({ success: true, tool: newTool }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -54,11 +78,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
-    console.error('Error submitting tool:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('API tools POST error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
