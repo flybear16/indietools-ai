@@ -15,6 +15,13 @@
       "when": 1777882109951,
       "tag": "0001_lively_penance",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1778444643064,
+      "tag": "0002_same_fallen_one",
+      "breakpoints": true
     }
   ]
 }

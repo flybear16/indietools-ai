@@ -116,6 +116,35 @@ export const clicks = pgTable('clicks', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// NextAuth required tables
+export const accounts = pgTable('accounts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  type: varchar('type', { length: 255 }).notNull(),
+  provider: varchar('provider', { length: 255 }).notNull(),
+  providerAccountId: varchar('provider_account_id', { length: 255 }).notNull(),
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  expiresAt: integer('expires_at'),
+  tokenType: varchar('token_type', { length: 255 }),
+  scope: text('scope'),
+  idToken: text('id_token'),
+  sessionState: text('session_state'),
+});
+
+export const sessions = pgTable('sessions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  sessionToken: varchar('session_token', { length: 255 }).notNull().unique(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  expires: timestamp('expires').notNull(),
+});
+
+export const verificationTokens = pgTable('verification_tokens', {
+  identifier: varchar('identifier', { length: 255 }).notNull(),
+  token: varchar('token', { length: 255 }).notNull(),
+  expires: timestamp('expires').notNull(),
+});
+
 // Types
 export type Category = typeof categories.$inferSelect;
 export type Tool = typeof tools.$inferSelect;
@@ -142,6 +171,22 @@ export const toolsRelations = relations(tools, ({ one, many }) => ({
 export const usersRelations = relations(users, ({ many }) => ({
   reviews: many(reviews),
   posts: many(posts),
+  accounts: many(accounts),
+  sessions: many(sessions),
+}));
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
 }));
 
 export const reviewsRelations = relations(reviews, ({ one }) => ({
