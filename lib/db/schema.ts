@@ -12,7 +12,7 @@ export const categories = pgTable('categories', {
   name: varchar('name', { length: 255 }).notNull(),
   slug: varchar('slug', { length: 255 }).notNull().unique(),
   description: text('description'),
-  phase: varchar('phase', { length: 50 }).notNull(), // ideation, building, design, launch, growth, monetization
+  phase: varchar('phase', { length: 50 }).notNull(),
   icon: varchar('icon', { length: 100 }),
   sortOrder: integer('sort_order').default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -52,7 +52,6 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// Newsletter subscriptions (邮箱订阅)
 export const newsletterSubscriptions = pgTable('newsletter_subscriptions', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -73,46 +72,6 @@ export const reviews = pgTable('reviews', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export type Category = typeof categories.$inferSelect;
-export type Tool = typeof tools.$inferSelect;
-export type User = typeof users.$inferSelect;
-export type Review = typeof reviews.$inferSelect;
-export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
-
-export type NewCategory = typeof categories.$inferInsert;
-export type NewTool = typeof tools.$inferInsert;
-export type NewUser = typeof users.$inferInsert;
-export type NewReview = typeof reviews.$inferInsert;
-
-// Relations
-export const categoriesRelations = relations(categories, ({ many }) => ({
-  tools: many(tools),
-}));
-
-export const toolsRelations = relations(tools, ({ one, many }) => ({
-  category: one(categories, {
-    fields: [tools.categoryId],
-    references: [categories.id],
-  }),
-  reviews: many(reviews),
-}));
-
-export const usersRelations = relations(users, ({ many }) => ({
-  reviews: many(reviews),
-}));
-
-export const reviewsRelations = relations(reviews, ({ one }) => ({
-  tool: one(tools, {
-    fields: [reviews.toolId],
-    references: [tools.id],
-  }),
-  user: one(users, {
-    fields: [reviews.userId],
-    references: [users.id],
-  }),
-}));
-
-// Use Cases (场景化工具推荐)
 export const useCases = pgTable('use_cases', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 255 }).notNull(),
@@ -132,7 +91,66 @@ export const useCaseTools = pgTable('use_case_tools', {
   isHighlighted: boolean('is_highlighted').default(false),
 });
 
+export const posts = pgTable('posts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  excerpt: text('excerpt'),
+  content: text('content').notNull(),
+  coverImage: varchar('cover_image', { length: 500 }),
+  authorId: uuid('author_id').references(() => users.id),
+  publishedAt: timestamp('published_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  tags: text('tags').array(),
+  isPublished: boolean('is_published').default(false),
+});
+
+// Types
+export type Category = typeof categories.$inferSelect;
+export type Tool = typeof tools.$inferSelect;
+export type User = typeof users.$inferSelect;
+export type Review = typeof reviews.$inferSelect;
+export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
+export type Post = typeof posts.$inferSelect;
+export type NewPost = typeof posts.$inferInsert;
+
 // Relations
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  tools: many(tools),
+}));
+
+export const toolsRelations = relations(tools, ({ one, many }) => ({
+  category: one(categories, {
+    fields: [tools.categoryId],
+    references: [categories.id],
+  }),
+  reviews: many(reviews),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  reviews: many(reviews),
+  posts: many(posts),
+}));
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  tool: one(tools, {
+    fields: [reviews.toolId],
+    references: [tools.id],
+  }),
+  user: one(users, {
+    fields: [reviews.userId],
+    references: [users.id],
+  }),
+}));
+
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.authorId],
+    references: [users.id],
+  }),
+}));
+
 export const useCasesRelations = relations(useCases, ({ many }) => ({
   useCaseTools: many(useCaseTools),
 }));

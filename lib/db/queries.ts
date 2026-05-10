@@ -1,6 +1,6 @@
 import { db } from './index';
-import { tools, categories, useCases, useCaseTools, newsletterSubscriptions, reviews } from './schema';
-import { eq, desc, asc, avg, count, sql } from 'drizzle-orm';
+import { tools, categories, useCases, useCaseTools, newsletterSubscriptions, reviews, posts } from './schema';
+import { eq, desc, asc, avg, count, sql, and, isNotNull } from 'drizzle-orm';
 
 export async function getAllTools() {
   return db.query.tools.findMany({
@@ -169,4 +169,20 @@ export async function getToolsWithStats() {
     ...tool,
     reviewStats: statsMap.get(tool.id) ?? { average: 0, count: 0 },
   }));
+}
+
+// Blog Posts
+export async function getPublishedPosts() {
+  return db.query.posts.findMany({
+    where: and(eq(posts.isPublished, true), isNotNull(posts.publishedAt)),
+    with: { author: true },
+    orderBy: desc(posts.publishedAt),
+  });
+}
+
+export async function getPostBySlug(slug: string) {
+  return db.query.posts.findFirst({
+    where: and(eq(posts.slug, slug), eq(posts.isPublished, true)),
+    with: { author: true },
+  });
 }
