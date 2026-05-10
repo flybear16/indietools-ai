@@ -17,13 +17,15 @@ interface Tool {
     name: string;
     slug: string;
   } | null;
+  reviewStats?: { average: number; count: number };
 }
 
 interface ToolCardProps {
   tool: Tool;
+  showRating?: boolean;
 }
 
-export function ToolCard({ tool }: ToolCardProps) {
+export function ToolCard({ tool, showRating = true }: ToolCardProps) {
   const getPricingLabel = () => {
     if (tool.hasFreeTier) return 'Free';
     if (tool.pricingModel === 'open_source') return 'Open Source';
@@ -42,6 +44,10 @@ export function ToolCard({ tool }: ToolCardProps) {
     }
   };
 
+  const stats = tool.reviewStats;
+  const rating = stats && stats.count > 0 ? stats.average : null;
+  const ratingCount = stats?.count ?? 0;
+
   return (
     <Link
       href={`/tools/${tool.slug}`}
@@ -50,8 +56,8 @@ export function ToolCard({ tool }: ToolCardProps) {
       <div className="flex items-start gap-3">
         <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center text-lg font-bold text-muted-foreground relative overflow-hidden">
           {tool.logoUrl ? (
-            <Image 
-              src={tool.logoUrl} 
+            <Image
+              src={tool.logoUrl}
               alt={tool.name}
               width={32}
               height={32}
@@ -81,10 +87,18 @@ export function ToolCard({ tool }: ToolCardProps) {
           {getPricingLabel()}
         </span>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-            <span>4.5</span>
-          </div>
+          {showRating && rating !== null ? (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+              <span>{rating.toFixed(1)}</span>
+              {ratingCount > 0 && <span className="text-muted">({ratingCount})</span>}
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+              <span>4.5</span>
+            </div>
+          )}
           <CompareButton tool={tool as any} />
         </div>
       </div>

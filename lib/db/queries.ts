@@ -1,6 +1,6 @@
 import { db } from './index';
-import { tools, categories, useCases, useCaseTools, newsletterSubscriptions, reviews, users } from './schema';
-import { eq, desc, avg, count, sql } from 'drizzle-orm';
+import { tools, categories, useCases, useCaseTools, newsletterSubscriptions, reviews } from './schema';
+import { eq, desc, asc, avg, count, sql } from 'drizzle-orm';
 
 export async function getAllTools() {
   return db.query.tools.findMany({
@@ -142,11 +142,31 @@ export async function createReview(data: {
 }
 
 export async function getToolsWithStats() {
-  return db.query.tools.findMany({
-    with: {
-      category: true,
-      reviews: true,
-    },
+  const allTools = await db.query.tools.findMany({
+    with: { category: true },
     orderBy: desc(tools.createdAt),
   });
+
+
+  // Fetch review stats for all tools in one query
+  const statsRows = await db
+    .select({
+      toolId: reviews.toolId,
+      average: avg(reviews.rating),
+      count: count(reviews.id),
+    })
+    .from(reviews)
+    .groupBy(reviews.toolId);
+
+
+  const statsMap = new Map(statsRows.map((r) => [r.toolId, {
+    average: r.average ? Number(r.average) : 0,
+    count: Number(r.count ?? 0),
+  }]));
+
+
+  return allTools.map((tool) => ({
+    ...tool,
+    reviewStats: statsMap.get(tool.id) ?? { average: 0, count: 0 },
+  }));
 }
