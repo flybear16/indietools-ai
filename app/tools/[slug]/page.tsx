@@ -136,15 +136,27 @@ export default async function ToolPage({ params }: ToolPageProps) {
 
           {/* Actions */}
           <div className="flex flex-col gap-3">
-            <a 
-              href={tool.websiteUrl || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Visit Website
-            </a>
+            {tool.affiliateEnabled && tool.affiliateUrl ? (
+              <a
+                href={`/go/${tool.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Get {tool.name} (Affiliate)
+              </a>
+            ) : (
+              <a
+                href={tool.websiteUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Visit Website
+              </a>
+            )}
             <button className="inline-flex items-center justify-center rounded-md border px-6 py-3 text-sm font-medium hover:bg-muted gap-2">
               <Star className="h-4 w-4" />
               Add to Favorites

@@ -106,6 +106,16 @@ export const posts = pgTable('posts', {
   isPublished: boolean('is_published').default(false),
 });
 
+// Affiliate clicks
+export const clicks = pgTable('clicks', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  toolId: uuid('tool_id').references(() => tools.id).notNull(),
+  referrer: varchar('referrer', { length: 500 }),
+  userAgent: text('user_agent'),
+  country: varchar('country', { length: 100 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 // Types
 export type Category = typeof categories.$inferSelect;
 export type Tool = typeof tools.$inferSelect;
@@ -126,6 +136,7 @@ export const toolsRelations = relations(tools, ({ one, many }) => ({
     references: [categories.id],
   }),
   reviews: many(reviews),
+  clicks: many(clicks),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -141,6 +152,13 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   user: one(users, {
     fields: [reviews.userId],
     references: [users.id],
+  }),
+}));
+
+export const clicksRelations = relations(clicks, ({ one }) => ({
+  tool: one(tools, {
+    fields: [clicks.toolId],
+    references: [tools.id],
   }),
 }));
 
