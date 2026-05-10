@@ -2,8 +2,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { getToolBySlug, getAllTools } from '@/lib/db/queries';
+import { getToolBySlug, getAllTools, getToolReviews, getToolReviewStats } from '@/lib/db/queries';
 import { ToolCard } from '@/components/tool-card';
+import { ReviewCard, ReviewSummary } from '@/components/review-card';
+import { ReviewForm } from '@/components/review-form';
 import { 
   ArrowLeft, 
   ExternalLink, 
@@ -55,6 +57,10 @@ export default async function ToolPage({ params }: ToolPageProps) {
   const relatedTools = allTools
     .filter(t => t.categoryId === tool.categoryId && t.id !== tool.id)
     .slice(0, 3);
+
+  // Get reviews
+  const toolReviews = await getToolReviews(tool.id);
+  const stats = await getToolReviewStats(tool.id);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -296,6 +302,32 @@ export default async function ToolPage({ params }: ToolPageProps) {
           </div>
         </section>
       )}
+
+
+      {/* Reviews Section */}
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 border-t">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h2 className="text-xl font-semibold">Reviews</h2>
+          <ReviewSummary average={stats.average} count={stats.count} />
+        </div>
+
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-4">
+            {toolReviews.length === 0 ? (
+              <p className="text-muted-foreground py-8 text-center">
+                No reviews yet. Be the first to review!
+              </p>
+            ) : (
+              toolReviews.map((review) => (
+                <ReviewCard key={review.id} review={review} />
+              ))
+            )}
+          </div>
+          <div>
+            <ReviewForm toolId={tool.id} />
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t py-8 mt-auto">

@@ -1,6 +1,6 @@
 import { db } from './index';
-import { tools, categories, useCases, useCaseTools, newsletterSubscriptions } from './schema';
-import { eq, desc } from 'drizzle-orm';
+import { tools, categories, useCases, useCaseTools, newsletterSubscriptions, reviews, users } from './schema';
+import { eq, desc, avg, count, sql } from 'drizzle-orm';
 
 export async function getAllTools() {
   return db.query.tools.findMany({
@@ -105,5 +105,48 @@ export async function unsubscribeEmail(email: string) {
 export async function getSubscriptionByEmail(email: string) {
   return db.query.newsletterSubscriptions.findFirst({
     where: eq(newsletterSubscriptions.email, email),
+  });
+}
+
+// Reviews
+export async function getToolReviews(toid: string) {
+  return db.query.reviews.findMany({
+    where: eq(reviews.toolId, toid),
+    with: {
+      user: true,
+    },
+    orderBy: desc(reviews.createdAt),
+  });
+}
+
+export async function getToolReviewStats(toid: string) {
+  const result = await db.select({
+    average: avg(reviews.rating),
+    count: count(reviews.id),
+  }).from(reviews).where(eq(reviews.toolId, toid));
+  return {
+    average: result[0]?.average ? Number(result[0].average) : 0,
+    count: Number(result[0]?.count ?? 0),
+  };
+}
+
+export async function createReview(data: {
+  toolId: string;
+  userId: string;
+  rating: number;
+  reviewText?: string;
+  useCase?: string;
+  wouldRecommend?: boolean;
+}) {
+  return db.insert(reviews).values(data).returning();
+}
+
+export async function getToolsWithStats() {
+  return db.query.tools.findMany({
+    with: {
+      category: true,
+      reviews: true,
+    },
+    orderBy: desc(tools.createdAt),
   });
 }
