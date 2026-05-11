@@ -16,10 +16,10 @@
 **关联文件**: `app/api/auth/**`, `lib/auth.ts`
 
 ### 2. 支付系统集成
-- [ ] Stripe 账号注册 + Webhook 配置
-- [ ] Submit & Boost 付费流程（$29 加速审核）
-- [ ] Featured 展示位购买流程
-- [ ] 支付状态同步 + 订单记录
+- [x] Stripe 账号注册 + Webhook 配置
+- [x] Submit & Boost 付费流程（$29 加速审核）
+- [x] Featured 展示位购买流程
+- [x] 支付状态同步 + 订单记录
 
 **关联文件**: `app/api/stripe/**`, `app/submit/page.tsx`
 
