@@ -37,6 +37,8 @@ export const tools = pgTable('tools', {
   affiliateEnabled: boolean('affiliate_enabled').default(false),
   status: toolStatusEnum('status').default('pending'),
   submittedBy: uuid('submitted_by'),
+  isFeatured: boolean('is_featured').default(false),
+  featuredExpiresAt: timestamp('featured_expires_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
@@ -145,6 +147,20 @@ export const verificationTokens = pgTable('verification_tokens', {
   expires: timestamp('expires').notNull(),
 });
 
+// Payments/Orders
+export const payments = pgTable('payments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id),
+  toolId: uuid('tool_id').references(() => tools.id),
+  stripeSessionId: varchar('stripe_session_id', { length: 255 }).notNull(),
+  stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }),
+  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+  currency: varchar('currency', { length: 10 }).default('usd'),
+  planType: varchar('plan_type', { length: 50 }).notNull(), // 'boost' | 'featured'
+  status: varchar('status', { length: 50 }).default('pending'), // 'pending' | 'completed' | 'failed'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 // Types
 export type Category = typeof categories.$inferSelect;
 export type Tool = typeof tools.$inferSelect;
@@ -197,6 +213,17 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   user: one(users, {
     fields: [reviews.userId],
     references: [users.id],
+  }),
+}));
+
+export const paymentsRelations = relations(payments, ({ one }) => ({
+  user: one(users, {
+    fields: [payments.userId],
+    references: [users.id],
+  }),
+  tool: one(tools, {
+    fields: [payments.toolId],
+    references: [tools.id],
   }),
 }));
 
