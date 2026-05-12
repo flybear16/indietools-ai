@@ -36,12 +36,14 @@
 **关联文件**: `lib/email.ts`
 
 ### 4. SEO 优化
-- [ ] 添加 robots.txt
-- [ ] Open Graph 图片生成
-- [ ] 结构化数据（JSON-LD）
+- [x] 添加 robots.txt
+- [x] Open Graph 图片生成 (元数据配置)
+- [ ] Open Graph 图片素材制作
+- [x] 结构化数据（JSON-LD）
 - [ ] 提交sitemap到搜索平台
+- [ ] Twitter Card 素材制作
 
-**关联文件**: `app/robots.ts`, `app/sitemap.ts`
+**关联文件**: `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx`
 
 ### 5. Pro 会员功能
 - [ ] 会员等级设计（Free/Pro）
