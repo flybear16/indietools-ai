@@ -1,5 +1,5 @@
 import { db } from './index';
-import { tools, categories, useCases, useCaseTools, newsletterSubscriptions, reviews, posts } from './schema';
+import { tools, categories, useCases, useCaseTools, newsletterSubscriptions, reviews, posts, favorites } from './schema';
 import { eq, desc, asc, avg, count, sql, and, isNotNull } from 'drizzle-orm';
 
 export async function getAllTools() {
@@ -185,4 +185,42 @@ export async function getPostBySlug(slug: string) {
     where: and(eq(posts.slug, slug), eq(posts.isPublished, true)),
     with: { author: true },
   });
+}
+
+// Favorites
+export async function getUserFavorites(userId: string) {
+  return db.query.favorites.findMany({
+    where: eq(favorites.userId, userId),
+    with: {
+      tool: {
+        with: {
+          category: true,
+        },
+      },
+    },
+    orderBy: desc(favorites.createdAt),
+  });
+}
+
+export async function addFavorite(userId: string, toolId: string) {
+  return db.insert(favorites).values({ userId, toolId }).onConflictDoNothing().returning();
+}
+
+export async function removeFavorite(userId: string, toolId: string) {
+  return db.delete(favorites).where(and(eq(favorites.userId, userId), eq(favorites.toolId, toolId)));
+}
+
+export async function isFavorite(userId: string, toolId: string) {
+  const result = await db.query.favorites.findFirst({
+    where: and(eq(favorites.userId, userId), eq(favorites.toolId, toolId)),
+  });
+  return !!result;
+}
+
+export async function getUserFavoriteToolIds(userId: string) {
+  const userFavorites = await db.query.favorites.findMany({
+    where: eq(favorites.userId, userId),
+    columns: { toolId: true },
+  });
+  return userFavorites.map((f) => f.toolId);
 }

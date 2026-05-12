@@ -161,6 +161,13 @@ export const payments = pgTable('payments', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export const favorites = pgTable('favorites', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  toolId: uuid('tool_id').references(() => tools.id, { onDelete: 'cascade' }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 // Types
 export type Category = typeof categories.$inferSelect;
 export type Tool = typeof tools.$inferSelect;
@@ -168,6 +175,7 @@ export type User = typeof users.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
 export type Post = typeof posts.$inferSelect;
+export type Favorite = typeof favorites.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
 
 // Relations
@@ -182,6 +190,7 @@ export const toolsRelations = relations(tools, ({ one, many }) => ({
   }),
   reviews: many(reviews),
   clicks: many(clicks),
+  favorites: many(favorites),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -189,6 +198,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   posts: many(posts),
   accounts: many(accounts),
   sessions: many(sessions),
+  favorites: many(favorites),
 }));
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -223,6 +233,17 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
   }),
   tool: one(tools, {
     fields: [payments.toolId],
+    references: [tools.id],
+  }),
+}));
+
+export const favoritesRelations = relations(favorites, ({ one }) => ({
+  user: one(users, {
+    fields: [favorites.userId],
+    references: [users.id],
+  }),
+  tool: one(tools, {
+    fields: [favorites.toolId],
     references: [tools.id],
   }),
 }));

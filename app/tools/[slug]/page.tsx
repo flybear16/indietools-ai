@@ -2,10 +2,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { getToolBySlug, getAllTools, getToolReviews, getToolReviewStats } from '@/lib/db/queries';
+import { getToolBySlug, getAllTools, getToolReviews, getToolReviewStats, isFavorite } from '@/lib/db/queries';
+import { auth } from '@/lib/auth';
 import { ToolCard } from '@/components/tool-card';
 import { ReviewCard, ReviewSummary } from '@/components/review-card';
 import { ReviewForm } from '@/components/review-form';
+import { FavoriteButton } from '@/components/favorite-button';
 import { 
   ArrowLeft, 
   ExternalLink, 
@@ -61,6 +63,12 @@ export default async function ToolPage({ params }: ToolPageProps) {
   // Get reviews
   const toolReviews = await getToolReviews(tool.id);
   const stats = await getToolReviewStats(tool.id);
+
+  // Check if user has favorited this tool
+  const session = await auth();
+  const userFavorite = session?.user?.id
+    ? await isFavorite(session.user.id, tool.id)
+    : false;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -157,10 +165,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
                 Visit Website
               </a>
             )}
-            <button className="inline-flex items-center justify-center rounded-md border px-6 py-3 text-sm font-medium hover:bg-muted gap-2">
-              <Star className="h-4 w-4" />
-              Add to Favorites
-            </button>
+            <FavoriteButton toolId={tool.id} initialIsFavorite={userFavorite} showText />
           </div>
         </div>
       </section>
