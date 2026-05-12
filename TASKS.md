@@ -10,10 +10,10 @@
 ### 1. 用户系统集成
 - [x] 接入 NextAuth（GitHub/Google 登录）
 - [x] 用户注册/登录页面
-- [ ] 用户个人主页（收藏、提交历史）
+- [x] 用户个人主页（收藏、提交历史）
 - [x] 会话管理 + 中间件保护
 
-**关联文件**: `app/api/auth/**`, `lib/auth.ts`
+**关联文件**: `app/api/auth/**`, `lib/auth.ts`, `app/profile/page.tsx`
 
 ### 2. 支付系统集成
 - [x] Stripe 账号注册 + Webhook 配置
@@ -91,6 +91,7 @@
 | Sponsor 页面 | 683ad93 | 2026-05 |
 | 分析面板 | bf373e2 | 2026-05 |
 | NextAuth OAuth 集成 | d263865 | 2026-05 |
+| 用户个人主页 + 收藏功能 | 5c025ad | 2026-05 |
 
 ---
 
