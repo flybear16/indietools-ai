@@ -28,12 +28,13 @@
 ## 🟡 中优先级
 
 ### 3. 邮件系统集成
-- [ ] Resend API 配置
-- [ ] 提交审核通知邮件（管理员）
-- [ ] 审核结果通知邮件（用户）
+- [x] Resend API 配置
+- [x] 提交审核通知邮件（管理员）
+- [x] 审核结果通知邮件（用户）
 - [ ] Newsletter 邮件模板
+- [x] API 路由已完成（submit-notification / review-notification）
 
-**关联文件**: `lib/email.ts`
+**关联文件**: `lib/email.ts`, `app/api/email/**`
 
 ### 4. SEO 优化
 - [x] 添加 robots.txt
