@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { X, GitCompare, Plus } from 'lucide-react';
 
 interface Tool {
@@ -17,7 +17,8 @@ interface Tool {
   category: { name: string } | null;
 }
 
-const MAX_COMPARE = 4;
+const MAX_COMPARE_FREE = 2;
+const MAX_COMPARE_PRO = 4;
 
 interface CompareButtonProps {
   tool: Tool;
@@ -25,8 +26,13 @@ interface CompareButtonProps {
 }
 
 export function CompareButton({ tool, isInCompare = false }: CompareButtonProps) {
+  const { data: session } = useSession();
+  const isPro = (session?.user as any)?.subscriptionStatus === 'active' || (session?.user as any)?.role === 'pro';
   const [count, setCount] = useState(0);
-  
+  const [showUpgrade, setShowUpgrade] = useState(false);
+
+  const maxCompare = isPro ? MAX_COMPARE_PRO : MAX_COMPARE_FREE;
+
   useEffect(() => {
     const stored = localStorage.getItem('compare_tools');
     if (stored) {
@@ -42,7 +48,7 @@ export function CompareButton({ tool, isInCompare = false }: CompareButtonProps)
   const toggleCompare = () => {
     const stored = localStorage.getItem('compare_tools');
     let tools: Tool[] = [];
-    
+
     if (stored) {
       try {
         tools = JSON.parse(stored);
@@ -52,39 +58,49 @@ export function CompareButton({ tool, isInCompare = false }: CompareButtonProps)
     }
 
     const existingIndex = tools.findIndex(t => t.id === tool.id);
-    
+
     if (existingIndex >= 0) {
       tools.splice(existingIndex, 1);
-    } else if (tools.length < MAX_COMPARE) {
+    } else if (tools.length < maxCompare) {
       tools.push(tool);
+    } else if (!isPro) {
+      setShowUpgrade(true);
+      setTimeout(() => setShowUpgrade(false), 3000);
+      return;
     }
 
     localStorage.setItem('compare_tools', JSON.stringify(tools));
     setCount(tools.length);
-    
-    // Dispatch event to update compare bar
+
     window.dispatchEvent(new CustomEvent('compareUpdated', { detail: tools }));
   };
 
   return (
-    <button
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleCompare();
-      }}
-      className={`text-xs px-2 py-1 rounded border transition-colors ${
-        isInCompare
-          ? 'border-primary bg-primary/10 text-primary'
-          : 'border-muted hover:border-primary hover:text-primary'
-      }`}
-      title={isInCompare ? 'Remove from compare' : 'Add to compare'}
-    >
-      <span className="flex items-center gap-1">
-        <GitCompare className="h-3 w-3" />
-        {isInCompare ? 'Added' : 'Compare'}
-      </span>
-    </button>
+    <div className="inline-flex items-center gap-1">
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleCompare();
+        }}
+        className={`text-xs px-2 py-1 rounded border transition-colors ${
+          isInCompare
+            ? 'border-primary bg-primary/10 text-primary'
+            : 'border-muted hover:border-primary hover:text-primary'
+        }`}
+        title={isInCompare ? 'Remove from compare' : 'Add to compare'}
+      >
+        <span className="flex items-center gap-1">
+          <GitCompare className="h-3 w-3" />
+          {isInCompare ? 'Added' : 'Compare'}
+        </span>
+      </button>
+      {showUpgrade && (
+        <span className="text-xs text-red-500 animate-pulse">
+          <Link href="/subscription" className="underline">Upgrade to Pro</Link> for more
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -137,13 +153,13 @@ export function CompareBar() {
           <div className="flex items-center gap-2">
             <GitCompare className="h-5 w-5 text-primary" />
             <span className="text-sm font-medium">
-              Compare ({tools.length}/{MAX_COMPARE})
+              Compare ({tools.length}/{MAX_COMPARE_PRO})
             </span>
           </div>
-          
+
           <div className="flex items-center gap-2 overflow-x-auto">
             {tools.map((tool) => (
-              <div 
+              <div
                 key={tool.id}
                 className="flex items-center gap-1 bg-muted rounded-full pl-2 pr-1 py-1 text-sm"
               >
