@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { tools } from '@/lib/db/schema';
+import { tools, users } from '@/lib/db/schema';
 import { getAllTools, getToolBySlug, getToolReviewStats } from '@/lib/db/queries';
+import { sendToolSubmitNotification } from '@/lib/email';
 import { z } from 'zod';
+import { eq } from 'drizzle-orm';
 
 const submitToolSchema = z.object({
   name: z.string().min(2).max(100),
@@ -15,6 +17,8 @@ const submitToolSchema = z.object({
   hasOpenSource: z.boolean().default(false),
   hasApi: z.boolean().default(false),
   techStack: z.array(z.string()).optional(),
+  submitterEmail: z.string().email().optional(), // Optional for logged-in users
+  userId: z.string().uuid().optional(), // Logged-in user ID
 });
 
 // GET /api/tools - all tools
@@ -68,7 +72,28 @@ export async function POST(request: NextRequest) {
       ...validatedData,
       status: 'pending',
       affiliateEnabled: false,
+      submittedBy: validatedData.userId || null,
     }).returning();
+
+    // Send email notification to admin (if Resend configured)
+    if (process.env.RESEND_API_KEY) {
+      let submitterEmail: string | null = validatedData.submitterEmail || null;
+      if (!submitterEmail && validatedData.userId) {
+        const userId = validatedData.userId as string;
+        const user = await db.query.users.findFirst({ where: (users, { eq }) => eq(users.id, userId) });
+        submitterEmail = user?.email || null;
+      }
+      if (submitterEmail) {
+        sendToolSubmitNotification({
+          toolName: validatedData.name,
+          toolSlug: validatedData.slug,
+          submitterEmail,
+          description: validatedData.description,
+          websiteUrl: validatedData.websiteUrl,
+          pricingModel: validatedData.pricingModel,
+        }).catch((err) => console.error('Failed to send submit notification:', err));
+      }
+    }
 
     return NextResponse.json({ success: true, tool: newTool }, { status: 201 });
   } catch (error) {
