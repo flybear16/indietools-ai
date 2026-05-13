@@ -50,7 +50,7 @@
 - [ ] 会员等级设计（Free/Pro）
 - [x] 高级筛选权限控制 - Tech Stack 筛选仅 Pro 可用
 - [x] 工具对比次数限制 - Free 2个 / Pro 4个
-- [ ] 个人收藏夹
+- [x] 个人收藏夹 - 已完整实现
 - [x] 订阅页面 + Stripe 订阅
 - [x] Stripe Webhook 订阅生命周期处理
 
