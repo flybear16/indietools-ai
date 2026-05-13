@@ -38,11 +38,11 @@
 
 ### 4. SEO 优化
 - [x] 添加 robots.txt
-- [x] Open Graph 图片生成 (元数据配置)
-- [ ] Open Graph 图片素材制作
-- [x] 结构化数据（JSON-LD）
+- [x] Open Graph 图片生成
+- [x] Open Graph 图片素材制作
+- [x] 结构化数据（JSON-LD） - Organization + WebSite + SoftwareApplication
+- [x] Twitter Card 素材制作
 - [ ] 提交sitemap到搜索平台
-- [ ] Twitter Card 素材制作
 
 **关联文件**: `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx`
 
