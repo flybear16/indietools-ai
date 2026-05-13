@@ -1,6 +1,6 @@
 import { stripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
-import { tools } from "@/lib/db/schema";
+import { tools, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -44,6 +44,41 @@ export async function POST(req: Request) {
           })
           .where(eq(tools.id, toolId));
       }
+      break;
+    }
+
+    case "customer.subscription.created":
+    case "customer.subscription.updated": {
+      const subscription = event.data.object as any;
+      const userId = subscription.metadata?.userId;
+      if (!userId) break;
+
+      const isActive = subscription.status === "active";
+      const expiresAt = new Date(subscription.current_period_end * 1000);
+      await db
+        .update(users)
+        .set({
+          subscriptionStatus: isActive ? "active" : "inactive",
+          subscriptionExpiresAt: expiresAt,
+          role: isActive ? "pro" : "user",
+        })
+        .where(eq(users.id, userId));
+      break;
+    }
+
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object as any;
+      const userId = subscription.metadata?.userId;
+      if (!userId) break;
+
+      await db
+        .update(users)
+        .set({
+          subscriptionStatus: "cancelled",
+          subscriptionExpiresAt: null,
+          role: "user",
+        })
+        .where(eq(users.id, userId));
       break;
     }
 
