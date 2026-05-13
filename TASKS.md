@@ -48,13 +48,13 @@
 
 ### 5. Pro 会员功能
 - [ ] 会员等级设计（Free/Pro）
-- [ ] 高级筛选权限控制
-- [ ] 工具对比次数限制
+- [x] 高级筛选权限控制 - Tech Stack 筛选仅 Pro 可用
+- [x] 工具对比次数限制 - Free 2个 / Pro 4个
 - [ ] 个人收藏夹
 - [x] 订阅页面 + Stripe 订阅
 - [x] Stripe Webhook 订阅生命周期处理
 
-**关联文件**: `app/api/subscription/**`, `app/subscription/page.tsx`
+**关联文件**: `app/subscription/**`, `components/compare-button.tsx`, `components/advanced-filter.tsx`
 
 ---
 
