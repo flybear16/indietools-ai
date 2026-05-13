@@ -61,7 +61,7 @@
 ## 🟢 低优先级
 
 ### 6. 内容运营
-- [ ] 每周 AI Tools 周刊（内容策划 + 发送）
+- [x] 每周 AI Tools 周刊（Newsletter API + CLI 脚本）
 - [ ] 博客文章持续更新（每周 1-2 篇）
 - [ ] 场景页面（Scenes）工具组合优化
 
@@ -71,6 +71,8 @@
 - [ ] 注册 Vercel Partner
 - [ ] 注册 Supabase Partner
 - [ ] 其他高佣金工具（Semrush, Ahrefs, Jasper）
+
+**关联文件**: `app/api/newsletter/route.ts`, `scripts/send-newsletter.js`
 
 **参考**: `docs/Affiliate计划注册清单.md`
 
