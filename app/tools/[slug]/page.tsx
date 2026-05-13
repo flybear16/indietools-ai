@@ -42,6 +42,13 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
       title: `${tool.name} - ${tool.category?.name} Tool`,
       description: tool.description || undefined,
       type: 'article',
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: `${tool.name} - AI Tool` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${tool.name} - AI Tool for Indie Developers`,
+      description: tool.description || undefined,
+      images: ['/og-image.png'],
     },
   };
 }
@@ -70,8 +77,21 @@ export default async function ToolPage({ params }: ToolPageProps) {
     ? await isFavorite(session.user.id, tool.id)
     : false;
 
+  const toolSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: tool.name,
+    description: tool.description,
+    url: tool.websiteUrl,
+    applicationCategory: tool.category?.name,
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: tool.startingPrice || '0', priceCurrency: 'USD' },
+  };
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toolSchema) }} />
+      <div className="flex min-h-screen flex-col">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
@@ -356,5 +376,6 @@ export default async function ToolPage({ params }: ToolPageProps) {
         </div>
       </footer>
     </div>
+    </>
   );
 }
