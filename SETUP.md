@@ -61,7 +61,34 @@ VERCEL_ANALYTICS_ID="从 Vercel 获取"
 2. 获取 API Keys (test mode → live mode)
 3. 配置 Webhooks:
    - `https://indietools.ai/api/stripe/webhook`
-   - Events: `checkout.session.completed`, `invoice.payment_succeeded`, `customer.subscription.deleted`
+   - Events: `checkout.session.completed`, `invoice.payment_succeeded`, `customer.subscription.deleted`, `customer.subscription.created`, `customer.subscription.updated`
+
+4. 创建订阅产品（Pro Monthly / Pro Yearly）:
+   - Products → Add Product → Subscription
+   - 月费 $9/月，年费 $89/年
+   - 获取 Price ID 添加到环境变量
+
+### 6. Stripe Pro 订阅价格配置
+在 `.env.local` 中添加:
+```bash
+# Stripe Price IDs (从 Stripe Dashboard 获取)
+NEXT_PUBLIC_STRIPE_PRICE_PRO_MONTHLY="price_xxx"
+NEXT_PUBLIC_STRIPE_PRICE_PRO_YEARLY="price_xxx"
+```
+
+### 7. Vercel 部署
+
+#### 连接 GitHub
+1. 打开 https://vercel.com/new
+2. Import GitHub repository: `flybear16/indietools-ai`
+3. Framework: Next.js
+4. Environment Variables: 添加所有 `.env.local` 中的变量
+5. Deploy
+
+#### 域名配置
+1. Vercel → Settings → Domains
+2. 添加 `indietools.ai`
+3. 按提示配置 DNS 记录
 
 ---
 
@@ -172,12 +199,34 @@ npm run lint         # ESLint 检查
 |--------|------|------|
 | 🔴 高 | GitHub OAuth App | ⬜ 未创建 |
 | 🔴 高 | Google OAuth | ⬜ 未创建 |
-| 🔴 高 | Stripe 账号配置 | ⬜ 未完成 |
+| 🔴 高 | Stripe 账号配置（产品+Price ID） | ⬜ 未完成 |
 | 🟡 中 | Resend API Key | ⬜ 未配置 |
 | 🟡 中 | Google Search Console 提交 sitemap | ⬜ 未提交 |
 | 🟡 中 | Bing Webmaster 提交 sitemap | ⬜ 未提交 |
+| 🟢 低 | Vercel 部署 | ⬜ 未完成 |
 | 🟢 低 | Vercel 域名绑定 | ⬜ 未完成 |
 | 🟢 低 | Resend 域名验证 | ⬜ 可选 |
+
+### Pro 订阅功能配置
+
+完成代码部署后，还需要手动配置：
+
+1. **在 Stripe 创建两个订阅产品**:
+   - `Pro Monthly` - $9/月
+   - `Pro Yearly` - $89/年（相当于 $7.42/月）
+
+
+2. **将 Price ID 添加到环境变量**:
+   ```bash
+   NEXT_PUBLIC_STRIPE_PRICE_PRO_MONTHLY="price_xxx"
+   NEXT_PUBLIC_STRIPE_PRICE_PRO_YEARLY="price_xxx"
+   ```
+
+
+3. **配置 Stripe Webhook 事件**:
+   - `customer.subscription.created`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
 
 ---
 

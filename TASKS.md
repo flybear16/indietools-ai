@@ -51,9 +51,10 @@
 - [ ] 高级筛选权限控制
 - [ ] 工具对比次数限制
 - [ ] 个人收藏夹
-- [ ] 会员订阅页面 + Stripe 订阅
+- [x] 订阅页面 + Stripe 订阅
+- [x] Stripe Webhook 订阅生命周期处理
 
-**关联文件**: `app/api/subscription/**`
+**关联文件**: `app/api/subscription/**`, `app/subscription/page.tsx`
 
 ---
 
