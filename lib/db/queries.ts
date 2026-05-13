@@ -1,6 +1,6 @@
 import { db } from './index';
 import { tools, categories, useCases, useCaseTools, newsletterSubscriptions, reviews, posts, favorites } from './schema';
-import { eq, desc, asc, avg, count, sql, and, isNotNull } from 'drizzle-orm';
+import { eq, desc, asc, avg, count, sql, and, isNotNull, gte } from 'drizzle-orm';
 
 export async function getAllTools() {
   return db.query.tools.findMany({
@@ -8,6 +8,18 @@ export async function getAllTools() {
       category: true,
     },
     orderBy: desc(tools.createdAt),
+  });
+}
+
+export async function getRecentTools(limit = 10) {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  return db.query.tools.findMany({
+    where: gte(tools.createdAt, sevenDaysAgo),
+    with: { category: true },
+    orderBy: desc(tools.createdAt),
+    limit,
   });
 }
 
@@ -106,6 +118,14 @@ export async function getSubscriptionByEmail(email: string) {
   return db.query.newsletterSubscriptions.findFirst({
     where: eq(newsletterSubscriptions.email, email),
   });
+}
+
+export async function getActiveSubscribers() {
+  const subscribers = await db.query.newsletterSubscriptions.findMany({
+    where: eq(newsletterSubscriptions.isActive, true),
+    columns: { email: true },
+  });
+  return subscribers.map(s => s.email);
 }
 
 // Reviews
