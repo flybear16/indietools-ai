@@ -27,8 +27,16 @@ export async function POST(req: Request) {
 
   switch (event.type) {
     case "checkout.session.completed": {
-      const session = event.data.object;
+      const session = event.data.object as any;
       const { toolId, planType, userId } = session.metadata || {};
+
+      // Store stripe customer id on user
+      if (session.customer && userId) {
+        await db
+          .update(users)
+          .set({ stripeCustomerId: session.customer })
+          .where(eq(users.id, userId));
+      }
 
       if (toolId && planType === "boost") {
         // Mark tool as featured for 30 days
@@ -55,14 +63,16 @@ export async function POST(req: Request) {
 
       const isActive = subscription.status === "active";
       const expiresAt = new Date(subscription.current_period_end * 1000);
-      await db
-        .update(users)
-        .set({
-          subscriptionStatus: isActive ? "active" : "inactive",
-          subscriptionExpiresAt: expiresAt,
-          role: isActive ? "pro" : "user",
-        })
-        .where(eq(users.id, userId));
+      const updates: any = {
+        subscriptionStatus: isActive ? "active" : "inactive",
+        subscriptionExpiresAt: expiresAt,
+        role: isActive ? "pro" : "user",
+      };
+      // Update stripe customer id if provided
+      if (subscription.customer) {
+        updates.stripeCustomerId = subscription.customer;
+      }
+      await db.update(users).set(updates).where(eq(users.id, userId));
       break;
     }
 

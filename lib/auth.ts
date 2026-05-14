@@ -23,6 +23,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
+        // Fetch fresh user data for subscription status
+        const dbUser = await db.query.users.findFirst({
+          where: (users, { eq }) => eq(users.id, user.id),
+        });
+        if (dbUser) {
+          (session.user as any).subscriptionStatus = dbUser.subscriptionStatus;
+          (session.user as any).role = dbUser.role;
+          (session.user as any).stripeCustomerId = dbUser.stripeCustomerId;
+        }
       }
       return session;
     },

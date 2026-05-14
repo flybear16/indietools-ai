@@ -49,6 +49,7 @@ export const users = pgTable('users', {
   name: varchar('name', { length: 255 }),
   avatarUrl: varchar('avatar_url', { length: 500 }),
   role: userRoleEnum('role').default('user'),
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
   subscriptionStatus: subscriptionStatusEnum('subscription_status').default('inactive'),
   subscriptionExpiresAt: timestamp('subscription_expires_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),

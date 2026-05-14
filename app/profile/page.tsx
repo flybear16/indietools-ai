@@ -35,11 +35,33 @@ export default async function ProfilePage() {
                 {session.user.name || "Anonymous User"}
               </h1>
               <p className="text-gray-600">{session.user.email}</p>
-              {session.user.id && (
-                <p className="text-sm text-gray-400 mt-1">
-                  ID: {session.user.id.slice(0, 8)}...
-                </p>
-              )}
+              <div className="flex items-center gap-2 mt-1">
+                {session.user.id && (
+                  <p className="text-sm text-gray-400">
+                    ID: {session.user.id.slice(0, 8)}...
+                  </p>
+                )}
+                {(session.user as any)?.subscriptionStatus === 'active' || (session.user as any)?.role === 'pro' ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold">
+                    ✨ Pro
+                  </span>
+                ) : (
+                  <Link
+                    href="/subscription"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-medium hover:bg-gray-200 transition"
+                  >
+                    Upgrade to Pro →
+                  </Link>
+                )}
+                {(session.user as any)?.stripeCustomerId && (session.user as any)?.subscriptionStatus === 'active' && (
+                  <Link
+                    href="/subscription"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-medium hover:bg-indigo-100 transition"
+                  >
+                    Manage Subscription
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>
